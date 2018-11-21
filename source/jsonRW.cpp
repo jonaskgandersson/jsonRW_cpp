@@ -1,23 +1,24 @@
-//
-// jWrite.cpp		version A1v2
-//
-// A *really* simple JSON writer in C++
-//
-// see: jWrite.hpp for info
-// and: https://www.codeproject.com/Articles/887604/jWrite-a-really-simple-JSON-writer-in-C
-//
-// Original C version: TonyWilk, Mar 2015
-// C++ ("Arduino version"): TonyWilk, Mar 2018
-//
+/**
+ * @brief jsonRW.cpp
+ * 
+ * *really* simple JSON writer in C++
+ * 
+ * Original C version: TonyWilk, Mar 2015
+ * C++ ("Arduino version"): TonyWilk, Mar 2018
+ * This version C++ ("Mbed version"): JonasAndersson, Nov 2018
+ * 
+ */
 
 #include "jsonRW.hpp"
 
-//------------------------------------------
-// open
-// - open writing of JSON starting with rootType = JW_OBJECT or JW_ARRAY
-// - initialise with user string buffer of length buflen
-// - isPretty=JW_PRETTY adds \n and spaces to prettify output (else JW_COMPACT)
-//
+/**
+ * @brief open writing of JSON
+ * 
+ * initialise with user string buffer of length buflen
+ * 
+ * @param rootType is the base JSON type: JW_OBJECT or JW_ARRAY
+ * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
+ */
 void jWrite::open( enum jwNodeType rootType, int is_Pretty )
 {
 	memset( buffer, 0, buflen );	// zap the whole destination buffer (all string terminators)
@@ -31,11 +32,14 @@ void jWrite::open( enum jwNodeType rootType, int is_Pretty )
 	putch( (rootType==JW_OBJECT) ? '{' : '[' );
 }
 
-//------------------------------------------
-// close
-// - closes the root JSON object started by open()
-// - returns error code
-//
+/**
+ * @brief Closes the element opened by open()
+ * 
+ * After an error, all following jWrite calls are skipped internally
+ * so the error code is for the first error detected
+ * 
+ * @return int error code (0 = JWRITE_OK)
+ */
 int jWrite::close( )
 {
 	if( error == JWRITE_OK )
@@ -53,9 +57,11 @@ int jWrite::close( )
 	return error;
 }
 
-//------------------------------------------
-// End the current array/object
-//
+/**
+ * @brief End the current array/object
+ * 
+ * @return int error code
+ */
 int jWrite::end( )
 {
 	if( error == JWRITE_OK )
@@ -70,63 +76,103 @@ int jWrite::end( )
 	return error;
 }
 
-
-//------------------------------------------
-// errorPos
-// - Returns position of error: the nth call to a jWrite function
-//
+/**
+ * @brief Error Position
+ * 
+ * If jwClose returned an error, this function returns the number of the jWrite function call
+ * which caused that error.
+ * 
+ * @return int position of error: the nth call to a jWrite function
+ */
 int jWrite::errorPos( )
 {
 	return callNo;
 }
 
-
-//------------------------------------------
-// Object insert functions
-//
-
-// put raw string to object (i.e. contents of rawtext without quotes)
-//
+/**
+ * @brief Object raw insert functions
+ * 
+ * Put raw string to object (i.e. contents of rawtext without quotes
+ * 
+ * @param key Object key name
+ * @param rawtext Object value as raw text
+ */
 void jWrite::obj_raw( const char *key, const char *rawtext )
 {
 	if(_jwObj( key ) == JWRITE_OK)
 		putraw( rawtext);
 }
 
-// put "quoted" string to object
-//
+/**
+ * @brief Object string insert functions
+ * 
+ * Put "quoted" string to object
+ * 
+ * @param key Object key name
+ * @param value Object value
+ */
 void jWrite::obj_string( const char *key, const char *value )
 {
 	if(_jwObj( key ) == JWRITE_OK)
 		putstr( value );
 }
 
-// put basic types to object...
-//
+/**
+ * @brief Object integer insert functions
+ * 
+ * @param key Object key name
+ * @param value Object value as integer
+ */
 void jWrite::obj_int( const char *key, int value )
 {
 	modp_itoa10( value, tmpbuf );
 	obj_raw( key, tmpbuf );
 }
 
+/**
+ * @brief Object double insert functions
+ * 
+ * @param key Object key name
+ * @param value Object value as double
+ */
 void jWrite::obj_double( const char *key, double value )
 {
 	modp_dtoa2( value, tmpbuf, 6 );
 	obj_raw( key, tmpbuf );
 }
 
+/**
+ * @brief Object bool insert functions
+ * 
+ * Insert bool object, 0 or 1 is written as "true" or "false"
+ * 
+ * @param key Object key name
+ * @param oneOrZero Object value as bool 0 or 1
+ */
 void jWrite::obj_bool( const char *key, int oneOrZero )
 {
 	obj_raw( key, (oneOrZero) ? "true" : "false" );
 }
 
+/**
+ * @brief Object null insert functions
+ * 
+ * Insert empty object
+ * 
+ * @param key Object key name
+ */
 void jWrite::obj_null( const char *key )
 {
 	obj_raw( key, "null" );
 }
 
-// put Object in Object
-//
+/**
+ * @brief Object in Object
+ * 
+ * Open new object inside current object
+ * 
+ * @param key Object key name
+ */
 void jWrite::obj_object( const char *key )
 {
 	if(_jwObj( key ) == JWRITE_OK)
@@ -136,8 +182,13 @@ void jWrite::obj_object( const char *key )
 	}
 }
 
-// put Array in Object
-//
+/**
+ * @brief Array in Object
+ * 
+ * Open new Array inside current object
+ * 
+ * @param key Object key name
+ */
 void jWrite::obj_array( const char *key )
 {
 	if(_jwObj( key ) == JWRITE_OK)
@@ -147,48 +198,83 @@ void jWrite::obj_array( const char *key )
 	}
 }
 
-//------------------------------------------
-// Array insert functions
-//
-
-// put raw string to array (i.e. contents of rawtext without quotes)
-//
+/**
+ * @brief Array raw insert functions
+ * 
+ * Put raw string to array (i.e. contents of rawtext without quotes)
+ * 
+ * @param rawtext Array value as raw text
+ */
 void jWrite::arr_raw( const char *rawtext )
 {
 	if(_jwArr( ) == JWRITE_OK)
 		putraw( rawtext);
 }
 
-// put "quoted" string to array
-//
+/**
+ * @brief Array string insert functions
+ * 
+ * Put "quoted" string to array
+ * 
+ * @param value Array value as string
+ */
 void jWrite::arr_string( const char *value )
 {
 	if(_jwArr( ) == JWRITE_OK)
 		putstr( value );
 }
 
+/**
+ * @brief Array integer insert functions
+ * 
+ * @param value Array value as integer
+ */
 void jWrite::arr_int( int value )
 {
 	modp_itoa10( value, tmpbuf );
 	arr_raw( tmpbuf );
 }
 
+/**
+ * @brief Array double insert functions
+ * 
+ * @param value Array value as double
+ */
 void jWrite::arr_double( double value )
 {
 	modp_dtoa2( value, tmpbuf, 6 );
 	arr_raw( tmpbuf );
 }
 
+/**
+ * @brief Array bool insert functions
+ * 
+ * Insert bool object, 0 or 1 is written as "true" or "false"
+ * 
+ * @param oneOrZero Array value as 0 or 1
+ */
 void jWrite::arr_bool( int oneOrZero )
 {
 	arr_raw( (oneOrZero) ? "true" : "false" );
 }
 
+/**
+ * @brief Array null insert functions
+ * 
+ * Insert empty array value
+ * 
+ */
 void jWrite::arr_null( )
 {
 	arr_raw( "null" );
 }
 
+/**
+ * @brief Array object insert functions
+ * 
+ * Create new object inside current array
+ * 
+ */
 void jWrite::arr_object( )
 {
 	if(_jwArr( ) == JWRITE_OK)
@@ -198,6 +284,12 @@ void jWrite::arr_object( )
 	}
 }
 
+/**
+ * @brief Array array insert functions
+ * 
+ * Create new array inside current array
+ * 
+ */
 void jWrite::arr_array( )
 {
 	if(_jwArr( ) == JWRITE_OK)
@@ -207,14 +299,15 @@ void jWrite::arr_array( )
 	}
 }
 
-
-//------------------------------------------
-// jwErrorToString
-// - returns string describing error code
-//
+/**
+ * @brief ErrorToString
+ * 
+ * @param err Error code
+ * @return const char* string describing error code
+ */
 const char * jWrite::errorToString( int err )
 {
-	/* Not using verbose error messages for Arduino.
+	/* Not using verbose error messages
 	switch( err )
 	{
 	case JWRITE_OK:         return "OK"; 
@@ -240,9 +333,16 @@ const char * jWrite::errorToString( int err )
 	return "ERROR?";
 }
 
-//============================================================================
-// Internal functions
-//
+ /********************************************//**
+ *  Internal functions
+ ***********************************************/
+
+/**
+ * @brief Pretty printing
+ * 
+ * Add newline and whitspace to create pretty json print format
+ * 
+ */
 void jWrite::pretty( )
 {
 	int i;
@@ -254,8 +354,13 @@ void jWrite::pretty( )
 	}
 }
 
-// Push / Pop node stack
-//
+/**
+ * @brief Puch node stack
+ * 
+ * Add node to top of stack
+ * 
+ * @param jwNodeType Node type to push to stack
+ */
 void jWrite::push( enum jwNodeType nodeType )
 {
 	if( (stackpos+1) >= JWRITE_STACK_DEPTH )
@@ -267,6 +372,13 @@ void jWrite::push( enum jwNodeType nodeType )
 	}
 }
 
+/**
+ * @brief Pop node stack
+ * 
+ * Get nodetype on top of stack
+ * 
+ * @return enum jWrite::pop Node type on top of stack
+ */
 enum jwNodeType jWrite::pop( )
 {
 	enum jwNodeType retval= nodeStack[stackpos].nodeType;
@@ -277,6 +389,13 @@ enum jwNodeType jWrite::pop( )
 	return retval;
 }
 
+/**
+ * @brief Write character to buffer
+ * 
+ * Put one char to JSON buffer, overflow check.
+ * 
+ * @param c Character to write to buffer
+ */
 void jWrite::putch( const char c )
 {
 	if( (unsigned int)(bufp - buffer + 1) >= buflen )
@@ -287,8 +406,13 @@ void jWrite::putch( const char c )
 	}
 }
 
-// put string enclosed in quotes
-//
+/**
+ * @brief Write quoted string to buffer
+ * 
+ * Quote string with \"
+ * 
+ * @param str NULL terminated string to write to buffer
+ */
 void jWrite::putstr( const char *str )
 {
 	putch( '\"' );
@@ -297,21 +421,28 @@ void jWrite::putstr( const char *str )
 	putch( '\"' );
 }
 
-// put raw string
-//
+/**
+ * @brief Write raw string to buffer
+ * 
+ * @param str NULL terminated string to write to buffer
+ */
 void jWrite::putraw( const char *str )
 {
 	while( *str != '\0' )
 		putch( *str++ );
 }
 
-
-// *common Object function*
-// - checks error
-// - checks current node is OBJECT
-// - adds comma if reqd
-// - adds "key" :
-//
+/**
+ * @brief Common Object function
+ * 
+ * - checks error
+ * - checks current node is OBJECT
+ * - adds comma if reqd
+ * - adds "key" :
+ * 
+ * @param key Object key name
+ * @return int Error code
+ */
 int jWrite::_jwObj( const char *key )
 {
 	if( error == JWRITE_OK )
@@ -330,11 +461,15 @@ int jWrite::_jwObj( const char *key )
 	return error;
 }
 
-// *common Array function*
-// - checks error
-// - checks current node is ARRAY
-// - adds comma if reqd
-//
+/**
+ * @brief Common Array function*
+ * 
+ * - checks error
+ * - checks current node is ARRAY
+ * - adds comma if reqd
+ * 
+ * @return int Error code
+ */
 int jWrite::_jwArr( )
 {
 	if( error == JWRITE_OK )
@@ -393,7 +528,8 @@ void jWrite::modp_itoa10(int32_t value, char* str)
 }
 
 /**
- * Powers of 10
+ * @brief Powers of 10
+ * 
  * 10^0 to 10^9
  */
 static const double pow10[] = {1, 10, 100, 1000, 10000, 100000, 1000000,
@@ -524,6 +660,5 @@ void jWrite::modp_dtoa2(double value, char* str, int prec)
     *wstr='\0';
     strreverse(str, wstr-1);
 }
-//=================================================================
 
 /* end of jWrite.cpp */

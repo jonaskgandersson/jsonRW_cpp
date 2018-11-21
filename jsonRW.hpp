@@ -1,17 +1,16 @@
-//
-// jWrite.hpp
-//
-// A *really* simple JSON writer in C++
-// - a collection of functions to generate JSON semi-automatically
-//
-// see: https://www.codeproject.com/Articles/887604/jWrite-a-really-simple-JSON-writer-in-C
-//
-// The idea is to simplify writing native C values into a JSON string and
-// to provide some error trapping to ensure that the result is valid JSON.
-//
-// Original jWrite in C: TonyWilk, Mar 2015
-// C++ version: TonyWilk, Mar 2018
-// 
+/**
+ * @brief jsonRW.hpp
+ * A *really* simple JSON writer in C++
+ * a collection of functions to generate JSON semi-automatically
+ * 
+ * The idea is to simplify writing native C values into a JSON string and
+ * to provide some error trapping to ensure that the result is valid JSON.
+ * 
+ * Original C version: TonyWilk, Mar 2015
+ * C++ ("Arduino version"): TonyWilk, Mar 2018
+ * This version C++ ("Mbed version"): JonasAndersson, Nov 2018
+ * 
+ */
 
 #define JWRITE_STACK_DEPTH 32			// max nesting depth of objects/arrays
 
@@ -33,7 +32,10 @@ enum jwNodeType{
 	JW_ARRAY
 };
 
-
+/**
+ * @brief JSON object class
+ * 
+ */
 class jWrite{
   private:
 	// Variables:
@@ -66,22 +68,34 @@ class jWrite{
 		open( JW_OBJECT, JW_COMPACT );
 	};
 	
-	// open
-	// - initialises jWrite
-	// - rootType is the base JSON type: JW_OBJECT or JW_ARRAY
-	// - isPretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT
+    /**
+     * @brief open writing of JSON
+     * 
+     * initialise with user string buffer of length buflen
+     * 
+     * @param rootType is the base JSON type: JW_OBJECT or JW_ARRAY
+     * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
+     */
 	void open( enum jwNodeType rootType, int is_Pretty );
 
-	// close
-	// - closes the element opened by open()
-	// - returns error code (0 = JWRITE_OK)
-	// - after an error, all following jWrite calls are skipped internally
-	//   so the error code is for the first error detected
+    /**
+     * @brief Closes the element opened by open()
+     * 
+     * After an error, all following jWrite calls are skipped internally
+     * so the error code is for the first error detected
+     * 
+     * @return int error code (0 = JWRITE_OK)
+     */
 	int close( );
 
-	// errorPos
-	// - if jwClose returned an error, this function returns the number of the jWrite function call
-	//   which caused that error.
+    /**
+     * @brief Error Position
+     * 
+     * If jwClose returned an error, this function returns the number of the jWrite function call
+     * which caused that error.
+     * 
+     * @return int position of error: the nth call to a jWrite function
+     */
 	int errorPos( );
 
 	// Object insertion functions
