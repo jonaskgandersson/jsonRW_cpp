@@ -9,7 +9,9 @@
  * 
  */
 
-#include "jsonRW.hpp"
+#include "../jsonRW.hpp"
+#include <stdio.h>
+#include <cstring>
 
 /**
  * @brief open writing of JSON
@@ -513,7 +515,7 @@ static void strreverse(char* begin, char* end)
  * \param[in] value
  * \param[out] buf the output buffer.  Should be 16 chars or more.
  */
-void jWrite::modp_itoa10(int32_t value, char* str)
+void jWrite::modp_itoa10(int value, char* str)
 {
     char* wstr=str;
     // Take care of sign
@@ -560,7 +562,7 @@ void jWrite::modp_dtoa2(double value, char* str, int prec)
 	int neg= 0;
 	int whole;
 	double tmp;
-	uint32_t frac;
+	unsigned int frac;
 
     /* Hacky test for NaN
      * under -fast-math this won't work, but then you also won't
@@ -589,7 +591,7 @@ void jWrite::modp_dtoa2(double value, char* str, int prec)
 
     whole = (int) value;
     tmp = (value - whole) * pow10[prec];
-    frac = (uint32_t)(tmp);
+    frac = (unsigned int)(tmp);
     diff = tmp - frac;
 
     if (diff > 0.5) {

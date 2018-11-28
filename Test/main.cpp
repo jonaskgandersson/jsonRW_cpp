@@ -1,4 +1,5 @@
-#include "jsonRW.hpp"
+#include "../jsonRW.hpp"
+#include <stdio.h>
 
 #define BUFFER_LEN 1000
 
@@ -18,5 +19,6 @@ int main( int argc, char* argv[])
     jw.end();                           // end the array 
     err= jw.close();                    // close root object - done
 
+    printf("JSON: \n\r %s \n\r", buffer);
     return 0;
 }

@@ -55,7 +55,7 @@ class jWrite{
 	void putch( const char c );
 	void putstr( const char *str );
 	void putraw( const char *str );
-	void modp_itoa10(int32_t value, char* str);
+	void modp_itoa10(int value, char* str);
 	void modp_dtoa2(double value, char* str, int prec);
 	void pretty();
 	enum jwNodeType pop();
