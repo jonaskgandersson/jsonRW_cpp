@@ -11,7 +11,7 @@
 
 #include "../jsonRW.hpp"
 #include <stdio.h>
-#include <cstring>
+#include <string.h>
 
 /**
  * @brief open writing of JSON
