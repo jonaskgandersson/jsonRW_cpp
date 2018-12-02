@@ -19,6 +19,6 @@ int main( int argc, char* argv[])
     jw.end();                           // end the array 
     err= jw.close();                    // close root object - done
 
-    printf("JSON: \n\r %s \n\r", buffer);
+    printf("JSON: \n\r%s \n\r", buffer);
     return 0;
 }
