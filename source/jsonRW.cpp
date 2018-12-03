@@ -13,14 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/**
- * @brief open writing of JSON
- * 
- * initialise with user string buffer of length buflen
- * 
- * @param rootType is the base JSON type: JW_OBJECT or JW_ARRAY
- * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
- */
 void jWrite::open( enum jwNodeType rootType, int is_Pretty )
 {
 	memset( buffer, 0, buflen );	// zap the whole destination buffer (all string terminators)
@@ -34,14 +26,6 @@ void jWrite::open( enum jwNodeType rootType, int is_Pretty )
 	putch( (rootType==JW_OBJECT) ? '{' : '[' );
 }
 
-/**
- * @brief Closes the element opened by open()
- * 
- * After an error, all following jWrite calls are skipped internally
- * so the error code is for the first error detected
- * 
- * @return int error code (0 = JWRITE_OK)
- */
 int jWrite::close( )
 {
 	if( error == JWRITE_OK )
@@ -59,11 +43,6 @@ int jWrite::close( )
 	return error;
 }
 
-/**
- * @brief End the current array/object
- * 
- * @return int error code
- */
 int jWrite::end( )
 {
 	if( error == JWRITE_OK )
@@ -78,103 +57,45 @@ int jWrite::end( )
 	return error;
 }
 
-/**
- * @brief Error Position
- * 
- * If jwClose returned an error, this function returns the number of the jWrite function call
- * which caused that error.
- * 
- * @return int position of error: the nth call to a jWrite function
- */
 int jWrite::errorPos( )
 {
 	return callNo;
 }
 
-/**
- * @brief Object raw insert functions
- * 
- * Put raw string to object (i.e. contents of rawtext without quotes
- * 
- * @param key Object key name
- * @param rawtext Object value as raw text
- */
 void jWrite::obj_raw( const char *key, const char *rawtext )
 {
 	if(_jwObj( key ) == JWRITE_OK)
 		putraw( rawtext);
 }
 
-/**
- * @brief Object string insert functions
- * 
- * Put "quoted" string to object
- * 
- * @param key Object key name
- * @param value Object value
- */
 void jWrite::obj_string( const char *key, const char *value )
 {
 	if(_jwObj( key ) == JWRITE_OK)
 		putstr( value );
 }
 
-/**
- * @brief Object integer insert functions
- * 
- * @param key Object key name
- * @param value Object value as integer
- */
 void jWrite::obj_int( const char *key, int value )
 {
 	modp_itoa10( value, tmpbuf );
 	obj_raw( key, tmpbuf );
 }
 
-/**
- * @brief Object double insert functions
- * 
- * @param key Object key name
- * @param value Object value as double
- */
 void jWrite::obj_double( const char *key, double value )
 {
 	modp_dtoa2( value, tmpbuf, 6 );
 	obj_raw( key, tmpbuf );
 }
 
-/**
- * @brief Object bool insert functions
- * 
- * Insert bool object, 0 or 1 is written as "true" or "false"
- * 
- * @param key Object key name
- * @param oneOrZero Object value as bool 0 or 1
- */
 void jWrite::obj_bool( const char *key, int oneOrZero )
 {
 	obj_raw( key, (oneOrZero) ? "true" : "false" );
 }
 
-/**
- * @brief Object null insert functions
- * 
- * Insert empty object
- * 
- * @param key Object key name
- */
 void jWrite::obj_null( const char *key )
 {
 	obj_raw( key, "null" );
 }
 
-/**
- * @brief Object in Object
- * 
- * Open new object inside current object
- * 
- * @param key Object key name
- */
 void jWrite::obj_object( const char *key )
 {
 	if(_jwObj( key ) == JWRITE_OK)
@@ -184,13 +105,6 @@ void jWrite::obj_object( const char *key )
 	}
 }
 
-/**
- * @brief Array in Object
- * 
- * Open new Array inside current object
- * 
- * @param key Object key name
- */
 void jWrite::obj_array( const char *key )
 {
 	if(_jwObj( key ) == JWRITE_OK)
@@ -200,83 +114,40 @@ void jWrite::obj_array( const char *key )
 	}
 }
 
-/**
- * @brief Array raw insert functions
- * 
- * Put raw string to array (i.e. contents of rawtext without quotes)
- * 
- * @param rawtext Array value as raw text
- */
 void jWrite::arr_raw( const char *rawtext )
 {
 	if(_jwArr( ) == JWRITE_OK)
 		putraw( rawtext);
 }
 
-/**
- * @brief Array string insert functions
- * 
- * Put "quoted" string to array
- * 
- * @param value Array value as string
- */
 void jWrite::arr_string( const char *value )
 {
 	if(_jwArr( ) == JWRITE_OK)
 		putstr( value );
 }
 
-/**
- * @brief Array integer insert functions
- * 
- * @param value Array value as integer
- */
 void jWrite::arr_int( int value )
 {
 	modp_itoa10( value, tmpbuf );
 	arr_raw( tmpbuf );
 }
 
-/**
- * @brief Array double insert functions
- * 
- * @param value Array value as double
- */
 void jWrite::arr_double( double value )
 {
 	modp_dtoa2( value, tmpbuf, 6 );
 	arr_raw( tmpbuf );
 }
 
-/**
- * @brief Array bool insert functions
- * 
- * Insert bool object, 0 or 1 is written as "true" or "false"
- * 
- * @param oneOrZero Array value as 0 or 1
- */
 void jWrite::arr_bool( int oneOrZero )
 {
 	arr_raw( (oneOrZero) ? "true" : "false" );
 }
 
-/**
- * @brief Array null insert functions
- * 
- * Insert empty array value
- * 
- */
 void jWrite::arr_null( )
 {
 	arr_raw( "null" );
 }
 
-/**
- * @brief Array object insert functions
- * 
- * Create new object inside current array
- * 
- */
 void jWrite::arr_object( )
 {
 	if(_jwArr( ) == JWRITE_OK)
@@ -286,12 +157,6 @@ void jWrite::arr_object( )
 	}
 }
 
-/**
- * @brief Array array insert functions
- * 
- * Create new array inside current array
- * 
- */
 void jWrite::arr_array( )
 {
 	if(_jwArr( ) == JWRITE_OK)
@@ -301,12 +166,6 @@ void jWrite::arr_array( )
 	}
 }
 
-/**
- * @brief ErrorToString
- * 
- * @param err Error code
- * @return const char* string describing error code
- */
 const char * jWrite::errorToString( int err )
 {
 	/* Not using verbose error messages
@@ -339,12 +198,6 @@ const char * jWrite::errorToString( int err )
  *  Internal functions
  ***********************************************/
 
-/**
- * @brief Pretty printing
- * 
- * Add newline and whitspace to create pretty json print format
- * 
- */
 void jWrite::pretty( )
 {
 	int i;
@@ -356,13 +209,6 @@ void jWrite::pretty( )
 	}
 }
 
-/**
- * @brief Puch node stack
- * 
- * Add node to top of stack
- * 
- * @param jwNodeType Node type to push to stack
- */
 void jWrite::push( enum jwNodeType nodeType )
 {
 	if( (stackpos+1) >= JWRITE_STACK_DEPTH )
@@ -374,13 +220,6 @@ void jWrite::push( enum jwNodeType nodeType )
 	}
 }
 
-/**
- * @brief Pop node stack
- * 
- * Get nodetype on top of stack
- * 
- * @return enum jWrite::pop Node type on top of stack
- */
 enum jwNodeType jWrite::pop( )
 {
 	enum jwNodeType retval= nodeStack[stackpos].nodeType;
@@ -391,13 +230,6 @@ enum jwNodeType jWrite::pop( )
 	return retval;
 }
 
-/**
- * @brief Write character to buffer
- * 
- * Put one char to JSON buffer, overflow check.
- * 
- * @param c Character to write to buffer
- */
 void jWrite::putch( const char c )
 {
 	if( (unsigned int)(bufp - buffer + 1) >= buflen )
@@ -408,13 +240,6 @@ void jWrite::putch( const char c )
 	}
 }
 
-/**
- * @brief Write quoted string to buffer
- * 
- * Quote string with \"
- * 
- * @param str NULL terminated string to write to buffer
- */
 void jWrite::putstr( const char *str )
 {
 	putch( '\"' );
@@ -423,28 +248,12 @@ void jWrite::putstr( const char *str )
 	putch( '\"' );
 }
 
-/**
- * @brief Write raw string to buffer
- * 
- * @param str NULL terminated string to write to buffer
- */
 void jWrite::putraw( const char *str )
 {
 	while( *str != '\0' )
 		putch( *str++ );
 }
 
-/**
- * @brief Common Object function
- * 
- * - checks error
- * - checks current node is OBJECT
- * - adds comma if reqd
- * - adds "key" :
- * 
- * @param key Object key name
- * @return int Error code
- */
 int jWrite::_jwObj( const char *key )
 {
 	if( error == JWRITE_OK )
@@ -463,15 +272,6 @@ int jWrite::_jwObj( const char *key )
 	return error;
 }
 
-/**
- * @brief Common Array function*
- * 
- * - checks error
- * - checks current node is ARRAY
- * - adds comma if reqd
- * 
- * @return int Error code
- */
 int jWrite::_jwArr( )
 {
 	if( error == JWRITE_OK )
