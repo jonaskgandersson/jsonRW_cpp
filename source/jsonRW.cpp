@@ -108,7 +108,7 @@ void jWrite::obj_double( const char *key, double value )
 	obj_raw( key, tmpbuf );
 }
 
-void jWrite::obj_bool( const char *key, int oneOrZero )
+void jWrite::obj_bool( const char *key, bool oneOrZero )
 {
 	obj_raw( key, (oneOrZero) ? "true" : "false" );
 }
@@ -160,7 +160,7 @@ void jWrite::arr_double( double value )
 	arr_raw( tmpbuf );
 }
 
-void jWrite::arr_bool( int oneOrZero )
+void jWrite::arr_bool( bool oneOrZero )
 {
 	arr_raw( (oneOrZero) ? "true" : "false" );
 }

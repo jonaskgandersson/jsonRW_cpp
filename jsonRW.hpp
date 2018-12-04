@@ -217,7 +217,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param oneOrZero Object value as bool 0 or 1
 	 */
-	void obj_bool( const char *key, int oneOrZero );
+	void obj_bool( const char *key, bool oneOrZero );
 
 	/**
 	 * @brief Object null insert functions
@@ -283,7 +283,7 @@ class jWrite{
 	 * 
 	 * @param oneOrZero Array value as 0 or 1
 	 */
-	void arr_bool( int oneOrZero );
+	void arr_bool( bool oneOrZero );
 
 	/**
 	 * @brief Array null insert functions
