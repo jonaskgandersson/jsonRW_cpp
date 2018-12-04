@@ -12,23 +12,24 @@
  * 
  */
 
-#define JWRITE_STACK_DEPTH 32			// max nesting depth of objects/arrays
+#define JWRITE_STACK_DEPTH 32 // max nesting depth of objects/arrays
 
-#define JW_COMPACT	0					// output string control for jwOpen()
-#define JW_PRETTY	1					// pretty adds \n and indentation
+#define JW_COMPACT 0 // output string control for jwOpen()
+#define JW_PRETTY 1  // pretty adds \n and indentation
 
 // Error Codes
 // -----------
-#define JWRITE_OK           0
-#define JWRITE_BUF_FULL     1		// output buffer full
-#define JWRITE_NOT_ARRAY	2		// tried to write Array value into Object
-#define JWRITE_NOT_OBJECT	3		// tried to write Object key/value into Array
-#define JWRITE_STACK_FULL	4		// array/object nesting > JWRITE_STACK_DEPTH
-#define JWRITE_STACK_EMPTY	5		// stack underflow error (too many 'end's)
-#define JWRITE_NEST_ERROR	6		// nesting error, not all objects closed when jwClose() called
+#define JWRITE_OK 0
+#define JWRITE_BUF_FULL 1	// output buffer full
+#define JWRITE_NOT_ARRAY 2   // tried to write Array value into Object
+#define JWRITE_NOT_OBJECT 3  // tried to write Object key/value into Array
+#define JWRITE_STACK_FULL 4  // array/object nesting > JWRITE_STACK_DEPTH
+#define JWRITE_STACK_EMPTY 5 // stack underflow error (too many 'end's)
+#define JWRITE_NEST_ERROR 6  // nesting error, not all objects closed when jwClose() called
 
-enum jwNodeType{
-	JW_OBJECT= 1,
+enum jwNodeType
+{
+	JW_OBJECT = 1,
 	JW_ARRAY
 };
 
@@ -43,21 +44,23 @@ enum class JsonNodeType
  * @brief JSON object class
  * 
  */
-class jWrite{
+class jWrite
+{
   private:
 	// Variables:
-	char *buffer;						// pointer to application's buffer
-	unsigned int buflen;		// length of buffer
-	char *bufp;							// current write position in buffer
-	char tmpbuf[32];				// local buffer for int/double convertions
-	int error;							// error code
-	int callNo;							// API call on which error occurred
-	struct jwNodeStack{
+	char *buffer;		 // pointer to application's buffer
+	unsigned int buflen; // length of buffer
+	char *bufp;			 // current write position in buffer
+	char tmpbuf[32];	 // local buffer for int/double convertions
+	int error;			 // error code
+	int callNo;			 // API call on which error occurred
+	struct jwNodeStack
+	{
 		enum jwNodeType nodeType;
 		int elementNo;
-	} nodeStack[JWRITE_STACK_DEPTH];	// stack of array/object nodes
+	} nodeStack[JWRITE_STACK_DEPTH]; // stack of array/object nodes
 	int stackpos;
-	int isPretty;						// 1= pretty output (inserts \n and spaces)
+	int isPretty; // 1= pretty output (inserts \n and spaces)
 	// private methods:
 
 	/**
@@ -67,7 +70,7 @@ class jWrite{
 	 * 
 	 * @param c Character to write to buffer
 	 */
-	void putch( const char c );
+	void putch(const char c);
 
 	/**
 	 * @brief Write quoted string to buffer
@@ -76,16 +79,16 @@ class jWrite{
 	 * 
 	 * @param str NULL terminated string to write to buffer
 	 */
-	void putstr( const char *str );
+	void putstr(const char *str);
 
 	/**
 	 * @brief Write raw string to buffer
 	 * 
 	 * @param str NULL terminated string to write to buffer
 	 */
-	void putraw( const char *str );
-	void modp_itoa10(int value, char* str);
-	void modp_dtoa2(double value, char* str, int prec);
+	void putraw(const char *str);
+	void modp_itoa10(int value, char *str);
+	void modp_dtoa2(double value, char *str, int prec);
 
 	/**
 	 * @brief Pretty printing
@@ -111,8 +114,8 @@ class jWrite{
 	 * 
 	 * @param jwNodeType Node type to push to stack
 	 */
-	void push( enum jwNodeType nodeType );
-	
+	void push(enum jwNodeType nodeType);
+
 	/**
 	 * @brief Common Object function
 	 * 
@@ -123,8 +126,8 @@ class jWrite{
 	 * 
 	 * @param key Object key name
 	 * @return int Error code
-	 */	
-	int _jwObj( const char *key );
+	 */
+	int _jwObj(const char *key);
 
 	/**
 	 * @brief Common Array function*
@@ -135,13 +138,14 @@ class jWrite{
 	 * 
 	 * @return int Error code
 	 */
-	int _jwArr( );
-	
+	int _jwArr();
+
   public:
-	jWrite( char *pbuffer, int buf_len ) : buffer(pbuffer), buflen(buf_len){
-		open( JW_OBJECT, JW_COMPACT );
+	jWrite(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len)
+	{
+		open(JW_OBJECT, JW_COMPACT);
 	};
-	
+
 	/**
 	 * @brief open writing of JSON
 	 * 
@@ -150,7 +154,7 @@ class jWrite{
 	 * @param rootType is the base JSON type: JW_OBJECT or JW_ARRAY
 	 * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
 	 */
-	void open( enum jwNodeType rootType, int is_Pretty );
+	void open(enum jwNodeType rootType, int is_Pretty);
 
 	/**
 	 * @brief Closes the element opened by open()
@@ -160,7 +164,7 @@ class jWrite{
 	 * 
 	 * @return int error code (0 = JWRITE_OK)
 	 */
-	int close( );
+	int close();
 
 	/**
 	 * @brief Error Position
@@ -170,7 +174,7 @@ class jWrite{
 	 * 
 	 * @return int position of error: the nth call to a jWrite function
 	 */
-	int errorPos( );
+	int errorPos();
 
 	/*******************************************/
 
@@ -182,7 +186,7 @@ class jWrite{
 	 * @param key Object key
 	 * @return int error code
 	 */
-	int add(const char* key, JsonNodeType nodeType );
+	int add(const char *key, JsonNodeType nodeType);
 
 	/**
 	 * @brief Object string insert functions
@@ -193,7 +197,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param value Object value
 	 */
-	void obj_string( const char *key, const char *value );
+	void obj_string(const char *key, const char *value);
 
 	/**
 	 * @brief Object integer insert functions
@@ -203,7 +207,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param value Object value as integer
 	 */
-	void obj_int( const char *key, int value );
+	void obj_int(const char *key, int value);
 
 	/**
 	 * @brief Object double insert functions
@@ -213,7 +217,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param value Object value as double
 	 */
-	void obj_double( const char *key, double value );
+	void obj_double(const char *key, double value);
 
 	/**
 	 * @brief Object bool insert functions
@@ -224,7 +228,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param oneOrZero Object value as bool 0 or 1
 	 */
-	void obj_bool( const char *key, bool oneOrZero );
+	void obj_bool(const char *key, bool oneOrZero);
 
 	/**
 	 * @brief Object null insert functions
@@ -234,7 +238,7 @@ class jWrite{
 	 * 
 	 * @param key Object key name
 	 */
-	void obj_null( const char *key );
+	void obj_null(const char *key);
 
 	/**
 	 * @brief Object in Object
@@ -243,7 +247,7 @@ class jWrite{
 	 * 
 	 * @param key Object key name
 	 */
-	void obj_object( const char *key );
+	void obj_object(const char *key);
 
 	/**
 	 * @brief Array in Object
@@ -252,7 +256,7 @@ class jWrite{
 	 * 
 	 * @param key Object key name
 	 */
-	void obj_array( const char *key );
+	void obj_array(const char *key);
 
 	/**
 	 * @brief Array string insert functions
@@ -262,7 +266,7 @@ class jWrite{
 	 * 
 	 * @param value Array value as string
 	 */
-	void arr_string( const char *value );
+	void arr_string(const char *value);
 
 	/**
 	 * @brief Array integer insert functions
@@ -271,7 +275,7 @@ class jWrite{
 	 * 
 	 * @param value Array value as integer
 	 */
-	void arr_int( int value );
+	void arr_int(int value);
 
 	/**
 	 * @brief Array double insert functions
@@ -280,7 +284,7 @@ class jWrite{
 	 * 
 	 * @param value Array value as double
 	 */
-	void arr_double( double value );
+	void arr_double(double value);
 
 	/**
 	 * @brief Array bool insert functions
@@ -290,7 +294,7 @@ class jWrite{
 	 * 
 	 * @param oneOrZero Array value as 0 or 1
 	 */
-	void arr_bool( bool oneOrZero );
+	void arr_bool(bool oneOrZero);
 
 	/**
 	 * @brief Array null insert functions
@@ -299,8 +303,7 @@ class jWrite{
 	 * Insert empty array value
 	 * 
 	 */
-	void arr_null( );
-
+	void arr_null();
 
 	/**
 	 * @brief Array object insert functions
@@ -308,7 +311,7 @@ class jWrite{
 	 * Create new object inside current array
 	 * 
 	 */
-	void arr_object( );
+	void arr_object();
 
 	/**
 	 * @brief Array array insert functions
@@ -316,14 +319,14 @@ class jWrite{
 	 * Create new array inside current array
 	 * 
 	 */
-	void arr_array( );
+	void arr_array();
 
 	/**
 	 * @brief End the current array/object
 	 * 
 	 * @return int error code
 	 */
-	int end( );
+	int end();
 
 	/**
 	 * @brief Object raw insert functions
@@ -334,8 +337,7 @@ class jWrite{
 	 * @param key Object key name
 	 * @param rawtext Object value as raw text
 	 */
-	void obj_raw( const char *key, const char *rawtext );
-
+	void obj_raw(const char *key, const char *rawtext);
 
 	/**
 	 * @brief Array raw insert functions
@@ -345,16 +347,15 @@ class jWrite{
 	 * 
 	 * @param rawtext Array value as raw text
 	 */
-	void arr_raw( const char *rawtext );
-	
+	void arr_raw(const char *rawtext);
+
 	/**
 	 * @brief ErrorToString
 	 * 
 	 * @param err Error code
 	 * @return const char* '\0'-termianted string describing the error (as returned by jwClose())
 	 */
-	const char * errorToString( int err );
-
+	const char *errorToString(int err);
 };
 
 /* end of jWrite.hpp */
