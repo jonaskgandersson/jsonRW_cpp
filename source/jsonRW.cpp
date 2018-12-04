@@ -62,6 +62,28 @@ int jWrite::errorPos( )
 	return callNo;
 }
 
+int jWrite::add( const char* key )
+{
+	if( nodeStack[stackpos].nodeType != JW_ARRAY )
+	{
+		if(_jwObj( key ) == JWRITE_OK)
+		{
+			putch( '{' );
+			push( JW_OBJECT );
+		}
+	}
+	else
+	{
+		if(_jwArr( ) == JWRITE_OK)
+		{
+			putch( '{' );
+			push( JW_OBJECT );
+		}
+
+	}
+	return 0;
+}
+
 void jWrite::obj_raw( const char *key, const char *rawtext )
 {
 	if(_jwObj( key ) == JWRITE_OK)

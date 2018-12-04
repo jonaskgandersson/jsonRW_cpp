@@ -165,6 +165,18 @@ class jWrite{
 	 */
 	int errorPos( );
 
+	/*******************************************/
+
+	/**
+	 * @brief Open new object
+	 * 
+	 * Add new object
+	 * 
+	 * @param key Object key
+	 * @return int error code
+	 */
+	int add(const char* key );
+
 	/**
 	 * @brief Object string insert functions
 	 * 
