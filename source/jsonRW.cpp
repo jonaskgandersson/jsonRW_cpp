@@ -99,6 +99,38 @@ int jWrite::add(const char *key, JsonNodeType nodeType)
 	return error;
 }
 
+int jWrite::add(JsonNodeType nodeType)
+{
+	switch (nodeType)
+	{
+	case JsonNodeType::JS_OBJECT:
+	{
+		if (_jwArr() == JWRITE_OK)
+		{
+			putch('{');
+			push(JW_OBJECT);
+		}
+	}
+	break;
+	case JsonNodeType::JS_ARRAY:
+	{
+		if (_jwArr() == JWRITE_OK)
+		{
+			putch('[');
+			push(JW_ARRAY);
+		}
+	}
+	break;
+	case JsonNodeType::JS_NULL:
+		arr_raw("null");
+		break;
+	default:
+		error = JWRITE_BAD_TYPE;
+		break;
+	}
+
+	return error;
+}
 void jWrite::obj_raw(const char *key, const char *rawtext)
 {
 	if (_jwObj(key) == JWRITE_OK)

@@ -17,6 +17,12 @@ int main(int argc, char *argv[])
     jw.arr_int(1);
     jw.arr_int(2);
 
+    jw.add(JsonNodeType::JS_NULL);
+    jw.add(JsonNodeType::JS_ARRAY);
+    jw.end();
+    jw.add(JsonNodeType::JS_OBJECT);
+    jw.end();
+
     jw.end(); // end the array
 
     jw.add("ObjectArray", JsonNodeType::JS_NULL);

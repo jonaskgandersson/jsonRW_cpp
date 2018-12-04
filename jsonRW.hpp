@@ -26,7 +26,7 @@
 #define JWRITE_STACK_FULL 4  // array/object nesting > JWRITE_STACK_DEPTH
 #define JWRITE_STACK_EMPTY 5 // stack underflow error (too many 'end's)
 #define JWRITE_NEST_ERROR 6  // nesting error, not all objects closed when jwClose() called
-#define JWRITE_BAD_TYPE 7		// bad object type 
+#define JWRITE_BAD_TYPE 7	// bad object type
 
 enum jwNodeType
 {
@@ -187,6 +187,14 @@ class jWrite
 	 * @return int error code
 	 */
 	int add(const char *key, JsonNodeType nodeType);
+
+	/**
+	 * @brief Add object to array
+	 * 
+	 * @param nodeType Object type, as object, array or null
+	 * @return int error code
+	 */
+	int add(JsonNodeType nodeType);
 
 	/**
 	 * @brief Object string insert functions
