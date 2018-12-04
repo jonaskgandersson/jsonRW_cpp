@@ -32,6 +32,13 @@ enum jwNodeType{
 	JW_ARRAY
 };
 
+enum class JsonNodeType
+{
+	JS_OBJECT,
+	JS_ARRAY,
+	JS_NULL
+};
+
 /**
  * @brief JSON object class
  * 
@@ -175,7 +182,7 @@ class jWrite{
 	 * @param key Object key
 	 * @return int error code
 	 */
-	int add(const char* key );
+	int add(const char* key, JsonNodeType nodeType );
 
 	/**
 	 * @brief Object string insert functions

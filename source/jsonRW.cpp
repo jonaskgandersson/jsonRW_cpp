@@ -62,24 +62,32 @@ int jWrite::errorPos( )
 	return callNo;
 }
 
-int jWrite::add( const char* key )
+int jWrite::add( const char* key, JsonNodeType nodeType )
 {
-	if( nodeStack[stackpos].nodeType != JW_ARRAY )
+	switch(nodeType)
 	{
-		if(_jwObj( key ) == JWRITE_OK)
-		{
-			putch( '{' );
-			push( JW_OBJECT );
+		case JsonNodeType::JS_OBJECT: {
+										if(_jwObj( key ) == JWRITE_OK)
+										{
+											putch( '{' );
+											push( JW_OBJECT );
+										}
 		}
-	}
-	else
-	{
-		if(_jwArr( ) == JWRITE_OK)
-		{
-			putch( '{' );
-			push( JW_OBJECT );
-		}
+		break;
 
+		case JsonNodeType::JS_ARRAY: {
+										if(_jwObj( key ) == JWRITE_OK)
+										{
+											putch( '[' );
+											push( JW_ARRAY );
+										}
+		}
+		break;
+		case JsonNodeType::JS_NULL: {
+										obj_raw( key, "null" );
+		}
+		break;
+		default: break;
 	}
 	return 0;
 }
