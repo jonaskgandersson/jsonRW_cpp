@@ -93,9 +93,10 @@ int jWrite::add(const char *key, JsonNodeType nodeType)
 	}
 	break;
 	default:
+		error = JWRITE_BAD_TYPE;
 		break;
 	}
-	return 0;
+	return error;
 }
 
 void jWrite::obj_raw(const char *key, const char *rawtext)
