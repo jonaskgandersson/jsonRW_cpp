@@ -1,2 +1,2 @@
 all:
-	g++ Test/main.cpp source/jsonRW.cpp -o build/jsonTest
+	g++ test/main.cpp source/jsonRW.cpp -o build/jsonTest
