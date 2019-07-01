@@ -178,7 +178,7 @@ void jWrite::add(int value)
 	arr_raw(tmpbuf);
 }
 
-void jWrite::arr_double(double value)
+void jWrite::add(double value)
 {
 	modp_dtoa2(value, tmpbuf, 6);
 	arr_raw(tmpbuf);

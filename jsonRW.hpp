@@ -264,7 +264,7 @@ class jWrite
 	 * 
 	 * @param value Array value as double
 	 */
-	void arr_double(double value);
+	void add(double value);
 
 	/**
 	 * @brief Array bool insert functions

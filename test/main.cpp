@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
     jw.add(JsonNodeType::JS_NULL);      // Writes null
     jw.add(JsonNodeType::JS_ARRAY);     // Writes [
     jw.add("StringInArray");            // Writes "StringInArray"
+    jw.add(3.14159265);                 // Writes 3.14159265
     jw.end();   // Close array ]
     jw.add(JsonNodeType::JS_OBJECT);    // Writes {
     jw.end();   // Close object }
