@@ -286,7 +286,7 @@ class jWrite
 	 * @param key Object key name
 	 * @param rawtext Object value as raw text
 	 */
-	void obj_raw(const char *key, const char *rawtext);
+	void add_raw(const char *key, const char *rawtext);
 
 	/**
 	 * @brief Array raw insert functions

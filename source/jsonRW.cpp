@@ -89,7 +89,7 @@ int jWrite::add(const char *key, JsonNodeType nodeType)
 	break;
 	case JsonNodeType::JS_NULL:
 	{
-		obj_raw(key, "null");
+		add_raw(key, "null");
 	}
 	break;
 	default:
@@ -131,7 +131,7 @@ int jWrite::add(JsonNodeType nodeType)
 
 	return error;
 }
-void jWrite::obj_raw(const char *key, const char *rawtext)
+void jWrite::add_raw(const char *key, const char *rawtext)
 {
 	if (_jwObj(key) == JWRITE_OK)
 		putraw(rawtext);
@@ -146,18 +146,18 @@ void jWrite::add(const char *key, const char *value)
 void jWrite::add(const char *key, int value)
 {
 	modp_itoa10(value, tmpbuf);
-	obj_raw(key, tmpbuf);
+	add_raw(key, tmpbuf);
 }
 
 void jWrite::add(const char *key, double value)
 {
 	modp_dtoa2(value, tmpbuf, 6);
-	obj_raw(key, tmpbuf);
+	add_raw(key, tmpbuf);
 }
 
 void jWrite::add(const char *key, bool oneOrZero)
 {
-	obj_raw(key, (oneOrZero) ? "true" : "false");
+	add_raw(key, (oneOrZero) ? "true" : "false");
 }
 
 void jWrite::arr_raw(const char *rawtext)
