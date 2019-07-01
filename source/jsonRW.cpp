@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void jWrite::open(enum jwNodeType rootType, int is_Pretty)
+void jWrite::open(enum JsonNodeType rootType, int is_Pretty)
 {
 	memset(buffer, 0, buflen); // zap the whole destination buffer (all string terminators)
 	bufp = buffer;
@@ -23,7 +23,7 @@ void jWrite::open(enum jwNodeType rootType, int is_Pretty)
 	error = JWRITE_OK;
 	callNo = 1;
 	isPretty = is_Pretty;
-	putch((rootType == JW_OBJECT) ? '{' : '[');
+	putch((rootType == JsonNodeType::JS_OBJECT) ? '{' : '[');
 }
 
 int jWrite::close()
@@ -32,10 +32,10 @@ int jWrite::close()
 	{
 		if (stackpos == 0)
 		{
-			enum jwNodeType node = nodeStack[0].nodeType;
+			enum JsonNodeType node = nodeStack[0].nodeType;
 			if (isPretty)
 				putch('\n');
-			putch((node == JW_OBJECT) ? '}' : ']');
+			putch((node == JsonNodeType::JS_OBJECT) ? '}' : ']');
 		}
 		else
 		{
@@ -49,12 +49,12 @@ int jWrite::end()
 {
 	if (error == JWRITE_OK)
 	{
-		enum jwNodeType node;
+		enum JsonNodeType node;
 		int lastElemNo = nodeStack[stackpos].elementNo;
 		node = pop();
 		if (lastElemNo > 0)
 			pretty();
-		putch((node == JW_OBJECT) ? '}' : ']');
+		putch((node == JsonNodeType::JS_OBJECT) ? '}' : ']');
 	}
 	return error;
 }
@@ -73,7 +73,7 @@ int jWrite::add(const char *key, JsonNodeType nodeType)
 		if (_jwObj(key) == JWRITE_OK)
 		{
 			putch('{');
-			push(JW_OBJECT);
+			push(JsonNodeType::JS_OBJECT);
 		}
 	}
 	break;
@@ -83,7 +83,7 @@ int jWrite::add(const char *key, JsonNodeType nodeType)
 		if (_jwObj(key) == JWRITE_OK)
 		{
 			putch('[');
-			push(JW_ARRAY);
+			push(JsonNodeType::JS_ARRAY);
 		}
 	}
 	break;
@@ -108,7 +108,7 @@ int jWrite::add(JsonNodeType nodeType)
 		if (_jwArr() == JWRITE_OK)
 		{
 			putch('{');
-			push(JW_OBJECT);
+			push(JsonNodeType::JS_OBJECT);
 		}
 	}
 	break;
@@ -117,7 +117,7 @@ int jWrite::add(JsonNodeType nodeType)
 		if (_jwArr() == JWRITE_OK)
 		{
 			putch('[');
-			push(JW_ARRAY);
+			push(JsonNodeType::JS_ARRAY);
 		}
 	}
 	break;
@@ -239,7 +239,7 @@ void jWrite::pretty()
 	}
 }
 
-void jWrite::push(enum jwNodeType nodeType)
+void jWrite::push(enum JsonNodeType nodeType)
 {
 	if ((stackpos + 1) >= JWRITE_STACK_DEPTH)
 		error = JWRITE_STACK_FULL; // array/object nesting > JWRITE_STACK_DEPTH
@@ -250,9 +250,9 @@ void jWrite::push(enum jwNodeType nodeType)
 	}
 }
 
-enum jwNodeType jWrite::pop()
+enum JsonNodeType jWrite::pop()
 {
-	enum jwNodeType retval = nodeStack[stackpos].nodeType;
+	enum JsonNodeType retval = nodeStack[stackpos].nodeType;
 	if (stackpos == 0)
 		error = JWRITE_STACK_EMPTY; // stack underflow error (too many 'end's)
 	else
@@ -291,7 +291,7 @@ int jWrite::_jwObj(const char *key)
 	if (error == JWRITE_OK)
 	{
 		callNo++;
-		if (nodeStack[stackpos].nodeType != JW_OBJECT)
+		if (nodeStack[stackpos].nodeType != JsonNodeType::JS_OBJECT)
 			error = JWRITE_NOT_OBJECT; // tried to write Object key/value into Array
 		else if (nodeStack[stackpos].elementNo++ > 0)
 			putch(',');
@@ -309,7 +309,7 @@ int jWrite::_jwArr()
 	if (error == JWRITE_OK)
 	{
 		callNo++;
-		if (nodeStack[stackpos].nodeType != JW_ARRAY)
+		if (nodeStack[stackpos].nodeType != JsonNodeType::JS_ARRAY)
 			error = JWRITE_NOT_ARRAY; // tried to write array value into Object
 		else if (nodeStack[stackpos].elementNo++ > 0)
 			putch(',');

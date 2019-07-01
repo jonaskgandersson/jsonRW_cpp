@@ -28,15 +28,9 @@
 #define JWRITE_NEST_ERROR 6  // nesting error, not all objects closed when jwClose() called
 #define JWRITE_BAD_TYPE 7	// bad object type
 
-enum jwNodeType
-{
-	JW_OBJECT = 1,
-	JW_ARRAY
-};
-
 enum class JsonNodeType
 {
-	JS_OBJECT,
+	JS_OBJECT = 1,
 	JS_ARRAY,
 	JS_NULL
 };
@@ -57,7 +51,7 @@ class jWrite
 	int callNo;			 // API call on which error occurred
 	struct jwNodeStack
 	{
-		enum jwNodeType nodeType;
+		enum JsonNodeType nodeType;
 		int elementNo;
 	} nodeStack[JWRITE_STACK_DEPTH]; // stack of array/object nodes
 	int stackpos;
@@ -106,16 +100,16 @@ class jWrite
 	 * 
 	 * @return enum jWrite::pop Node type on top of stack
 	 */
-	enum jwNodeType pop();
+	enum JsonNodeType pop();
 
 	/**
 	 * @brief Puch node stack
 	 * 
 	 * Add node to top of stack
 	 * 
-	 * @param jwNodeType Node type to push to stack
+	 * @param JsonNodeType Node type to push to stack
 	 */
-	void push(enum jwNodeType nodeType);
+	void push(enum JsonNodeType nodeType);
 
 	/**
 	 * @brief Common Object function
@@ -144,7 +138,7 @@ class jWrite
   public:
 	jWrite(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len)
 	{
-		open(JW_OBJECT, JW_COMPACT);
+		open(JsonNodeType::JS_OBJECT, JW_COMPACT);
 	};
 
 	/**
@@ -152,10 +146,10 @@ class jWrite
 	 * 
 	 * initialise with user string buffer of length buflen
 	 * 
-	 * @param rootType is the base JSON type: JW_OBJECT or JW_ARRAY
+	 * @param rootType is the base JSON type: JS_OBJECT or JW_ARRAY
 	 * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
 	 */
-	void open(enum jwNodeType rootType, int is_Pretty);
+	void open(enum JsonNodeType rootType, int is_Pretty);
 
 	/**
 	 * @brief Closes the element opened by open()

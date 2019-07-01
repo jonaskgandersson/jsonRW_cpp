@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     int err = JWRITE_OK;
 
     jWrite jw(buffer, BUFFER_LEN); // Create jWrite instance to use application buffer
-    jw.open(JW_OBJECT, JW_PRETTY); // open root node as object
+    jw.open(JsonNodeType::JS_OBJECT, JW_PRETTY); // open root node as object
     jw.add("key", "value"); // writes "key":"value"
     jw.add("int", 1);          // writes "int":1
     jw.add("Double", 3.56);     //writes "Double":3.56
