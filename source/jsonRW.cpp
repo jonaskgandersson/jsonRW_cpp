@@ -137,7 +137,7 @@ void jWrite::obj_raw(const char *key, const char *rawtext)
 		putraw(rawtext);
 }
 
-void jWrite::obj_string(const char *key, const char *value)
+void jWrite::add(const char *key, const char *value)
 {
 	if (_jwObj(key) == JWRITE_OK)
 		putstr(value);
@@ -416,7 +416,7 @@ void jWrite::modp_itoa10(int value, char *str)
  * 10^0 to 10^9
  */
 static const double pow10[] = {1, 10, 100, 1000, 10000, 100000, 1000000,
-							   10000000, 100000000, 1000000000};
+															 10000000, 100000000, 1000000000};
 
 /** \brief convert a floating point number to char buffer with a
  *         variable-precision format, and no trailing zeros
