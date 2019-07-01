@@ -274,7 +274,7 @@ class jWrite
 	 * 
 	 * @param oneOrZero Array value as 0 or 1
 	 */
-	void arr_bool(bool oneOrZero);
+	void add(bool oneOrZero);
 
 	/**
 	 * @brief End the current array/object

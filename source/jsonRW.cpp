@@ -184,7 +184,7 @@ void jWrite::add(double value)
 	arr_raw(tmpbuf);
 }
 
-void jWrite::arr_bool(bool oneOrZero)
+void jWrite::add(bool oneOrZero)
 {
 	arr_raw((oneOrZero) ? "true" : "false");
 }

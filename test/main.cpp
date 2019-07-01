@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     jw.add(JsonNodeType::JS_ARRAY);     // Writes [
     jw.add("StringInArray");            // Writes "StringInArray"
     jw.add(3.14159265);                 // Writes 3.14159265
+    jw.add(false);                      // Writes false
+    jw.add((bool)1);                    // Writes true
     jw.end();   // Close array ]
     jw.add(JsonNodeType::JS_OBJECT);    // Writes {
     jw.end();   // Close object }
