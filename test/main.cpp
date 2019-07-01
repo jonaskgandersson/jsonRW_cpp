@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
     jw.add("Bool", true);       // writes "Bool":true
     jw.add("NotBool", 1);       // writes "NotBool":1 (This is an integer)
     jw.add("anArray", JsonNodeType::JS_ARRAY);       // start "anArray": [...]
-    jw.arr_int(0);                 // add a few integers to the array
-    jw.arr_int(1);
-    jw.arr_int(2);
+    jw.add(0);                 // add a few integers to the array
+    jw.add(1);
+    jw.add(2);
 
     jw.add(JsonNodeType::JS_NULL);      // Writes null
     jw.add(JsonNodeType::JS_ARRAY);     // Writes [

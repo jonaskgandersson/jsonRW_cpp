@@ -172,7 +172,7 @@ void jWrite::add(const char *value)
 		putstr(value);
 }
 
-void jWrite::arr_int(int value)
+void jWrite::add(int value)
 {
 	modp_itoa10(value, tmpbuf);
 	arr_raw(tmpbuf);

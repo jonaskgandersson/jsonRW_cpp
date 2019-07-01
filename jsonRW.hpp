@@ -255,7 +255,7 @@ class jWrite
 	 * 
 	 * @param value Array value as integer
 	 */
-	void arr_int(int value);
+	void add(int value);
 
 	/**
 	 * @brief Array double insert functions
