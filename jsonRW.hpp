@@ -236,7 +236,7 @@ class jWrite
 	 * @param key Object key name
 	 * @param oneOrZero Object value as bool 0 or 1
 	 */
-	void obj_bool(const char *key, bool oneOrZero);
+	void add(const char *key, bool oneOrZero);
 
 	/**
 	 * @brief Object null insert functions

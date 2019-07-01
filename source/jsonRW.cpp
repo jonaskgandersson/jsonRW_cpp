@@ -155,7 +155,7 @@ void jWrite::add(const char *key, double value)
 	obj_raw(key, tmpbuf);
 }
 
-void jWrite::obj_bool(const char *key, bool oneOrZero)
+void jWrite::add(const char *key, bool oneOrZero)
 {
 	obj_raw(key, (oneOrZero) ? "true" : "false");
 }
