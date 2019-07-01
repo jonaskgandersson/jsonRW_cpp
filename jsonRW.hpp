@@ -239,34 +239,6 @@ class jWrite
 	void add(const char *key, bool oneOrZero);
 
 	/**
-	 * @brief Object null insert functions
-	 * 
-	 * Used to insert "key":"value" pairs into an object
-	 * Insert empty object
-	 * 
-	 * @param key Object key name
-	 */
-	void obj_null(const char *key);
-
-	/**
-	 * @brief Object in Object
-	 * 
-	 * Open new object inside current object
-	 * 
-	 * @param key Object key name
-	 */
-	void obj_object(const char *key);
-
-	/**
-	 * @brief Array in Object
-	 * 
-	 * Open new Array inside current object
-	 * 
-	 * @param key Object key name
-	 */
-	void obj_array(const char *key);
-
-	/**
 	 * @brief Array string insert functions
 	 * 
 	 * Used to insert "value" elements into an array
@@ -303,31 +275,6 @@ class jWrite
 	 * @param oneOrZero Array value as 0 or 1
 	 */
 	void arr_bool(bool oneOrZero);
-
-	/**
-	 * @brief Array null insert functions
-	 * 
-	 * Used to insert "value" elements into an array
-	 * Insert empty array value
-	 * 
-	 */
-	void arr_null();
-
-	/**
-	 * @brief Array object insert functions
-	 * 
-	 * Create new object inside current array
-	 * 
-	 */
-	void arr_object();
-
-	/**
-	 * @brief Array array insert functions
-	 * 
-	 * Create new array inside current array
-	 * 
-	 */
-	void arr_array();
 
 	/**
 	 * @brief End the current array/object

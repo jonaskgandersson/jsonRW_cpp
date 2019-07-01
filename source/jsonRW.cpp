@@ -160,29 +160,6 @@ void jWrite::add(const char *key, bool oneOrZero)
 	obj_raw(key, (oneOrZero) ? "true" : "false");
 }
 
-void jWrite::obj_null(const char *key)
-{
-	obj_raw(key, "null");
-}
-
-void jWrite::obj_object(const char *key)
-{
-	if (_jwObj(key) == JWRITE_OK)
-	{
-		putch('{');
-		push(JW_OBJECT);
-	}
-}
-
-void jWrite::obj_array(const char *key)
-{
-	if (_jwObj(key) == JWRITE_OK)
-	{
-		putch('[');
-		push(JW_ARRAY);
-	}
-}
-
 void jWrite::arr_raw(const char *rawtext)
 {
 	if (_jwArr() == JWRITE_OK)
@@ -210,29 +187,6 @@ void jWrite::arr_double(double value)
 void jWrite::arr_bool(bool oneOrZero)
 {
 	arr_raw((oneOrZero) ? "true" : "false");
-}
-
-void jWrite::arr_null()
-{
-	arr_raw("null");
-}
-
-void jWrite::arr_object()
-{
-	if (_jwArr() == JWRITE_OK)
-	{
-		putch('{');
-		push(JW_OBJECT);
-	}
-}
-
-void jWrite::arr_array()
-{
-	if (_jwArr() == JWRITE_OK)
-	{
-		putch('[');
-		push(JW_ARRAY);
-	}
 }
 
 const char *jWrite::errorToString(int err)
