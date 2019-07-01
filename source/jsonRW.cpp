@@ -149,7 +149,7 @@ void jWrite::add(const char *key, int value)
 	obj_raw(key, tmpbuf);
 }
 
-void jWrite::obj_double(const char *key, double value)
+void jWrite::add(const char *key, double value)
 {
 	modp_dtoa2(value, tmpbuf, 6);
 	obj_raw(key, tmpbuf);
