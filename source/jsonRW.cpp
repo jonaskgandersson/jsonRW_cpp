@@ -143,7 +143,7 @@ void jWrite::add(const char *key, const char *value)
 		putstr(value);
 }
 
-void jWrite::obj_int(const char *key, int value)
+void jWrite::add(const char *key, int value)
 {
 	modp_itoa10(value, tmpbuf);
 	obj_raw(key, tmpbuf);

@@ -215,7 +215,7 @@ class jWrite
 	 * @param key Object key name
 	 * @param value Object value as integer
 	 */
-	void obj_int(const char *key, int value);
+	void add(const char *key, int value);
 
 	/**
 	 * @brief Object double insert functions
