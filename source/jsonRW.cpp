@@ -166,7 +166,7 @@ void jWrite::arr_raw(const char *rawtext)
 		putraw(rawtext);
 }
 
-void jWrite::arr_string(const char *value)
+void jWrite::add(const char *value)
 {
 	if (_jwArr() == JWRITE_OK)
 		putstr(value);

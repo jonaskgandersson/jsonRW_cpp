@@ -246,7 +246,7 @@ class jWrite
 	 * 
 	 * @param value Array value as string
 	 */
-	void arr_string(const char *value);
+	void add(const char *value);
 
 	/**
 	 * @brief Array integer insert functions
