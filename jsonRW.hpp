@@ -296,7 +296,7 @@ class jWrite
 	 * 
 	 * @param rawtext Array value as raw text
 	 */
-	void arr_raw(const char *rawtext);
+	void add_raw(const char *rawtext);
 
 	/**
 	 * @brief ErrorToString
