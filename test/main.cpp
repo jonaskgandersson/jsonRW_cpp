@@ -40,6 +40,12 @@ int main(int argc, char *argv[])
 
     err = jw.close(); // close root object - done
 
-    printf("JSON: \n\r%s \n\r", buffer);
+    if( !err )
+    {
+    	printf("JSON: \n\r%s \n\r", buffer);
+    }else
+    {
+	printf("JSON Error: %s @pos: %d\n\r", jw.errorToString(err), jw.errorPos());
+    }
     return 0;
 }
