@@ -43,12 +43,12 @@ class jWrite
 {
   private:
 	// Variables:
-	char *buffer;		 // pointer to application's buffer
-	unsigned int buflen; // length of buffer
-	char *bufp;			 // current write position in buffer
-	char tmpbuf[32];	 // local buffer for int/double convertions
-	int error;			 // error code
-	int callNo;			 // API call on which error occurred
+	char *buffer;		// pointer to application's buffer
+	unsigned int buflen;	// length of buffer
+	char *bufp;		// current write position in buffer
+	char tmpbuf[32];	// local buffer for int/double convertions
+	int error;		// error code
+	int callNo;		// API call on which error occurred
 	struct jwNodeStack
 	{
 		enum JsonNodeType nodeType;
@@ -136,10 +136,7 @@ class jWrite
 	int _jwArr();
 
   public:
-	jWrite(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len)
-	{
-		open(JsonNodeType::JS_OBJECT, JW_COMPACT);
-	};
+	jWrite(char *pbuffer, int buf_len);
 
 	/**
 	 * @brief open writing of JSON

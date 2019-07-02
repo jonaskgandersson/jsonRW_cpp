@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include <string.h>
 
+jWrite::jWrite(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len), bufp(buffer), error(JWRITE_OK),  callNo(0), stackpos(0),  isPretty(false)
+{
+}
+
 void jWrite::open(enum JsonNodeType rootType, int is_Pretty)
 {
 	memset(buffer, 0, buflen); // zap the whole destination buffer (all string terminators)
