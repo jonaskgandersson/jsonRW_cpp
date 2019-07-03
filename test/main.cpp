@@ -3,8 +3,23 @@
 
 #define BUFFER_LEN 1000
 
+//-------------------------------------------------
+//// Do a query and print the results
+void testQuery(jWrite& oJson, char * pJson, const char *query )
+{
+	struct jReadElement jElement;
+	oJson.jRead( pJson, query, &jElement );
+	printf( "Query: \"%s\"\n", query );
+	//printf( "return: %d= %s\n", jElement.error, oJson.jReadErrorToString(jElement.error) );
+	//printf( " dataType = %s\n", oJson.jReadTypeToString(jElement.dataType) );
+	printf( " elements = %d\n", jElement.elements );
+	printf( " bytelen  = %d\n", jElement.bytelen );
+	printf( " value    = %*.*s\n\n", jElement.bytelen,jElement.bytelen, (const char*)jElement.pValue );
+}
+
 int main(int argc, char *argv[])
 {
+	// Wrtite test
     char buffer[BUFFER_LEN];
     int err = JWRITE_OK;
 
@@ -47,5 +62,9 @@ int main(int argc, char *argv[])
     {
 	printf("JSON Error: %s @pos: %d\n\r", jw.errorToString(err), jw.errorPos());
     }
+
+	// Read test
+	testQuery(jw, buffer,"{'key'"); 
+
     return 0;
 }
