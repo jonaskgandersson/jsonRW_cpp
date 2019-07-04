@@ -38,7 +38,7 @@ int Json::close()
 	{
 		if (stackpos == 0)
 		{
-			enum NodeType node = nodeStack[0].nodeType;
+			NodeType node = nodeStack[0].nodeType;
 			if (isPretty)
 				putch('\n');
 			putch((node == NodeType::JS_OBJECT) ? '}' : ']');
@@ -55,7 +55,7 @@ int Json::end()
 {
 	if (error == JWRITE_OK)
 	{
-		enum NodeType node;
+		NodeType node;
 		int lastElemNo = nodeStack[stackpos].elementNo;
 		node = pop();
 		if (lastElemNo > 0)
@@ -245,7 +245,7 @@ int Json::add(NodeType nodeType)
 		}
 	}
 
-	void Json::push(enum NodeType nodeType)
+	void Json::push(NodeType nodeType)
 	{
 		if ((stackpos + 1) >= JWRITE_STACK_DEPTH)
 			error = JWRITE_STACK_FULL; // array/object nesting > JWRITE_STACK_DEPTH
@@ -256,9 +256,9 @@ int Json::add(NodeType nodeType)
 		}
 	}
 
-	enum NodeType Json::pop()
+	NodeType Json::pop()
 	{
-		enum NodeType retval = nodeStack[stackpos].nodeType;
+		NodeType retval = nodeStack[stackpos].nodeType;
 		if (stackpos == 0)
 			error = JWRITE_STACK_EMPTY; // stack underflow error (too many 'end's)
 		else

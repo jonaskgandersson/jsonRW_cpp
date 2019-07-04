@@ -104,7 +104,7 @@ namespace jonaskgandersson
 		int callNo;		// API call on which error occurred
 		struct jwNodeStack
 		{
-			enum NodeType nodeType;
+			NodeType nodeType;
 			int elementNo;
 		} nodeStack[JWRITE_STACK_DEPTH]; // stack of array/object nodes
 		int stackpos;
@@ -151,9 +151,9 @@ namespace jonaskgandersson
 		 * 
 		 * Get nodetype on top of stack
 		 * 
-		 * @return enum jWrite::pop Node type on top of stack
+		 * @return jWrite::pop Node type on top of stack
 		 */
-		enum NodeType pop();
+		NodeType pop();
 
 		/**
 		 * @brief Puch node stack
@@ -162,7 +162,7 @@ namespace jonaskgandersson
 		 * 
 		 * @param JsonNodeType Node type to push to stack
 		 */
-		void push(enum NodeType nodeType);
+		void push(NodeType nodeType);
 
 		/**
 		 * @brief Common Object function
@@ -213,7 +213,7 @@ namespace jonaskgandersson
 		 * @param rootType is the base JSON type: JS_OBJECT or JW_ARRAY
 		 * @param is_Pretty controls 'prettifying' the output: JW_PRETTY or JW_COMPACT)
 		 */
-		void open(enum NodeType rootType, int is_Pretty);
+		void open(NodeType rootType, int is_Pretty);
 
 		/**
 		 * @brief Closes the element opened by open()
