@@ -1,6 +1,6 @@
 /**
  * @brief jsonRW.hpp
- * A *really* simple JSON writer in C++
+ * A *really* simple JSON reader/writer in C++
  * a collection of functions to generate JSON semi-automatically
  * 
  * The idea is to simplify writing native C values into a JSON string and
@@ -64,7 +64,7 @@
 namespace jonaskgandersson
 {
 	//------------------------------------------------------
-	// jReadElement
+	// ReadElement
 	// - structure to return JSON elements
 	// - error=0 for valid returns
 	//
@@ -160,7 +160,7 @@ namespace jonaskgandersson
 		 * 
 		 * Add node to top of stack
 		 * 
-		 * @param JsonNodeType Node type to push to stack
+		 * @param NodeType Node type to push to stack
 		 */
 		void push(NodeType nodeType);
 
@@ -191,11 +191,11 @@ namespace jonaskgandersson
 		//------------------------------------------------------
 		// Internal Functions
 
-		const char *jReadSkipWhitespace( const char *sp );
-		const char *jReadFindTok( const char *sp, int *tokType );
-		const char *jReadGetString( const char *pJson, struct ReadElement *pElem, char quote );
-		int	jReadTextLen( const char *pJson );
-		int jReadStrcmp( struct ReadElement *j1, struct ReadElement *j2 );
+		const char *skipWhitespace( const char *sp );
+		const char *findTok( const char *sp, int *tokType );
+		const char *getElementString( const char *pJson, struct ReadElement *pElem, char quote );
+		int	getElementStringLenght( const char *pJson );
+		int equalElement( struct ReadElement *j1, struct ReadElement *j2 );
 		const char *jReadCountObject( const char *pJson, struct ReadElement *pResult, int keyIndex );
 		const char *jReadCountArray( const char *pJson, struct ReadElement *pResult );
 		const char *jRead_atoi( const char *p, unsigned int *result );

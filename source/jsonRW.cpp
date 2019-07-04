@@ -567,7 +567,7 @@ int Json::add(NodeType nodeType)
 		pResult->error= 0;
 		pResult->elements= 0;
 		pResult->pValue= pJson;
-		sp= jReadFindTok( pJson+1, &jTok ); // check for empty object
+		sp= findTok( pJson+1, &jTok ); // check for empty object
 		if( jTok == JREAD_EOBJECT )		
 		{
 			pJson= sp+1;
@@ -575,7 +575,7 @@ int Json::add(NodeType nodeType)
 		{
 			while( 1 )
 			{
-				pJson= jReadGetString( ++pJson, &jElement, '\"' );
+				pJson= getElementString( ++pJson, &jElement, '\"' );
 				if( jElement.dataType != JREAD_STRING )
 				{
 					pResult->error= 3;		// Expected "key"
@@ -587,7 +587,7 @@ int Json::add(NodeType nodeType)
 					pResult->dataType= JREAD_KEY;
 					return pJson;
 				}
-				pJson= jReadFindTok( pJson, &jTok );
+				pJson= findTok( pJson, &jTok );
 				if( jTok != JREAD_COLON )
 				{
 					pResult->error= 4;		// Expected ":"
@@ -596,7 +596,7 @@ int Json::add(NodeType nodeType)
 				pJson= getElement( ++pJson, "", &jElement );
 				if( pResult->error )
 					break;
-				pJson= jReadFindTok( pJson, &jTok );
+				pJson= findTok( pJson, &jTok );
 				pResult->elements++;
 				if( jTok == JREAD_EOBJECT )
 				{
@@ -637,7 +637,7 @@ int Json::add(NodeType nodeType)
 		pResult->error= 0;
 		pResult->elements= 0;
 		pResult->pValue= pJson;
-		sp= jReadFindTok( pJson+1, &jTok ); // check for empty array
+		sp= findTok( pJson+1, &jTok ); // check for empty array
 		if( jTok == JREAD_EARRAY )		
 		{
 			pJson= sp+1;
@@ -648,7 +648,7 @@ int Json::add(NodeType nodeType)
 				pJson= getElement( ++pJson, "", &jElement );	// array value
 				if( pResult->error )
 					break;
-				pJson= jReadFindTok( pJson, &jTok );	// , or ]
+				pJson= findTok( pJson, &jTok );	// , or ]
 				pResult->elements++;
 				if( jTok == JREAD_EARRAY )
 				{
@@ -674,7 +674,7 @@ int Json::add(NodeType nodeType)
 	{
 		int jTok;
 
-		pJsonArray= jReadFindTok( pJsonArray, &jTok );
+		pJsonArray= findTok( pJsonArray, &jTok );
 		switch( jTok )
 		{
 		case JREAD_ARRAY:	// start of array
@@ -706,8 +706,8 @@ int Json::add(NodeType nodeType)
 		unsigned int index, count;
 		struct ReadElement qElement, jElement;
 
-		pJson= jReadFindTok( pJson, &jTok );
-		pQuery= jReadFindTok( pQuery, &qTok );
+		pJson= findTok( pJson, &jTok );
+		pQuery= findTok( pQuery, &qTok );
 
 		pResult->dataType= jTok;
 		pResult->bytelen= pResult->elements= pResult->error= 0;
@@ -729,7 +729,7 @@ int Json::add(NodeType nodeType)
 			if( qTok == JREAD_EOL )
 				return jReadCountObject( pJson, pResult, -1 );	// return length of object 
 
-			pQuery= jReadFindTok( ++pQuery, &qTok );			// "('key'...", "{NUMBER", "{*" or EOL
+			pQuery= findTok( ++pQuery, &qTok );			// "('key'...", "{NUMBER", "{*" or EOL
 			if( qTok != JREAD_STRING )
 			{
 				index= 0;
@@ -749,34 +749,34 @@ int Json::add(NodeType nodeType)
 				return jReadCountObject( pJson, pResult, index );
 			}
 
-			pQuery= jReadGetString( pQuery, &qElement, QUERY_QUOTE );	// qElement = query 'key'
+			pQuery= getElementString( pQuery, &qElement, QUERY_QUOTE );	// qElement = query 'key'
 			//
 			// read <key> : <value> , ... }
 			// loop 'til key matched
 			//
 			while( 1 )
 			{
-				pJson= jReadGetString( ++pJson, &jElement, '\"' );
+				pJson= getElementString( ++pJson, &jElement, '\"' );
 				if( jElement.dataType != JREAD_STRING )
 				{
 					pResult->error= 3;		// Expected "key"
 					break;
 				}
-				pJson= jReadFindTok( pJson, &jTok );
+				pJson= findTok( pJson, &jTok );
 				if( jTok != JREAD_COLON )
 				{
 					pResult->error= 4;		// Expected ":"
 					break;
 				}
 				// compare object keys
-				if( jReadStrcmp( &qElement, &jElement ) == 0 )
+				if( equalElement( &qElement, &jElement ) == 0 )
 				{
 					// found object key
 					return getElement( ++pJson, pQuery, pResult, queryParams );
 				}
 				// no key match... skip this value
 				pJson= getElement( ++pJson, "", pResult, NULL );
-				pJson= jReadFindTok( pJson, &jTok );
+				pJson= findTok( pJson, &jTok );
 				if( jTok == JREAD_EOBJECT )
 				{
 					pResult->error= 5;		// Object key not found
@@ -797,7 +797,7 @@ int Json::add(NodeType nodeType)
 				return jReadCountArray( pJson, pResult );	// return length of object 
 
 			index= 0;
-			pQuery= jReadFindTok( ++pQuery, &qTok );		// "[NUMBER" or "[*"
+			pQuery= findTok( ++pQuery, &qTok );		// "[NUMBER" or "[*"
 			if( qTok == JREAD_NUMBER )		
 			{
 				pQuery= jRead_atoi( pQuery, &index );		// get array index	
@@ -817,7 +817,7 @@ int Json::add(NodeType nodeType)
 				if( pResult->error )
 					break;
 				count++;				
-				pJson= jReadFindTok( pJson, &jTok );			// , or ]
+				pJson= findTok( pJson, &jTok );			// , or ]
 				if( jTok == JREAD_EARRAY )
 				{
 					pResult->error= 10;		// Array element not found (bad index)
@@ -831,12 +831,12 @@ int Json::add(NodeType nodeType)
 			}
 			break;
 		case JREAD_STRING:		// "string" 
-			pJson= jReadGetString( pJson, pResult, '\"' );
+			pJson= getElementString( pJson, pResult, '\"' );
 			break;
 		case JREAD_NUMBER:		// number (may be -ve) int or float
 		case JREAD_BOOL:		// true or false
 		case JREAD_NULL:		// null
-			bytelen= jReadTextLen( pJson );
+			bytelen= getElementStringLenght( pJson );
 			pResult->dataType= jTok;
 			pResult->bytelen= bytelen;
 			pResult->pValue= pJson;
@@ -848,7 +848,7 @@ int Json::add(NodeType nodeType)
 		}
 		// We get here on a 'terminal value'
 		// - make sure the query string is empty also
-		pQuery= jReadFindTok( pQuery, &qTok );
+		pQuery= findTok( pQuery, &qTok );
 		if( !pResult->error && (qTok != JREAD_EOL) )
 			pResult->error= 7;	// terminal value found before end of query
 		if( pResult->error )
@@ -861,8 +861,8 @@ int Json::add(NodeType nodeType)
 	}
 
 
-	// Internal for jRead
-	const char *Json::jReadSkipWhitespace( const char *sp )
+	// Internal for reading 
+	const char *Json::skipWhitespace( const char *sp )
 	{
 		while( (*sp != '\0') && (*sp <= ' ') )
 			sp++;
@@ -874,10 +874,10 @@ int Json::add(NodeType nodeType)
 	// - returns pointer to start of next token or element
 	//   returns type via tokType
 	//
-	const char *Json::jReadFindTok( const char *sp, int *tokType )
+	const char *Json::findTok( const char *sp, int *tokType )
 	{
 		char c;
-		sp= jReadSkipWhitespace(sp);
+		sp= skipWhitespace(sp);
 		c= *sp;
 		if( c == '\0' )	*tokType= JREAD_EOL;
 		else if((c == '"') || (c == QUERY_QUOTE))*tokType= JREAD_STRING;
@@ -896,7 +896,7 @@ int Json::add(NodeType nodeType)
 		return sp;
 	}
 
-	// jReadGetString
+	// getElementString
 	// - assumes next element is "string" which may include "\" sequences
 	// - returns pointer to -------------^
 	// - pElem contains result ( JREAD_STRING, length, pointer to string)
@@ -905,13 +905,13 @@ int Json::add(NodeType nodeType)
 	// returns: pointer into pJson after the string (char after the " terminator)
 	//			pElem contains pointer and length of string (or dataType=JREAD_ERROR)
 	//
-	const char * Json::jReadGetString( const char *pJson, struct ReadElement *pElem, char quote )
+	const char * Json::getElementString( const char *pJson, struct ReadElement *pElem, char quote )
 	{
 		short skipch;
 		pElem->dataType= JREAD_ERROR;
 		pElem->elements= 1;
 		pElem->bytelen= 0;
-		pJson= jReadSkipWhitespace( pJson );
+		pJson= skipWhitespace( pJson );
 		if( *pJson == quote )
 		{
 			pJson++;
@@ -937,12 +937,12 @@ int Json::add(NodeType nodeType)
 		return pJson;
 	}
 
-	// jReadTextLen
+	// getElementStringLenght
 	// - used to identify length of element text
 	// - returns no. of chars from pJson upto a terminator
 	// - terminators: ' ' , } ]
 	//
-	int Json::jReadTextLen( const char *pJson )
+	int Json::getElementStringLenght( const char *pJson )
 	{
 		int len= 0;
 		while(	(*pJson >  ' ' ) &&		// any ctrl char incl '\0'
@@ -959,7 +959,7 @@ int Json::add(NodeType nodeType)
 	// compare two json elements
 	// returns: 0 if they are identical strings, else 1
 	//
-	int Json::jReadStrcmp( struct ReadElement *j1, struct ReadElement *j2 )
+	int Json::equalElement( struct ReadElement *j1, struct ReadElement *j2 )
 	{
 		int i;
 		if( (j1->dataType != JREAD_STRING) || 
