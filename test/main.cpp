@@ -3,12 +3,13 @@
 
 #define BUFFER_LEN 1000
 
+using namespace jonaskgandersson;
 //-------------------------------------------------
 //// Do a query and print the results
-void testQuery(jWrite& oJson, char * pJson, const char *query )
+void testQuery(Json& oJson, char * pJson, const char *query )
 {
-	struct jReadElement jElement;
-	oJson.jRead( pJson, query, &jElement );
+	struct ReadElement jElement;
+	oJson.getElement( pJson, query, &jElement );
 	printf( "Query: \"%s\"\n", query );
 	//printf( "return: %d= %s\n", jElement.error, oJson.jReadErrorToString(jElement.error) );
 	//printf( " dataType = %s\n", oJson.jReadTypeToString(jElement.dataType) );
@@ -23,33 +24,33 @@ int main(int argc, char *argv[])
     char buffer[BUFFER_LEN];
     int err = JWRITE_OK;
 
-    jWrite jw(buffer, BUFFER_LEN); // Create jWrite instance to use application buffer
-    jw.open(JsonNodeType::JS_OBJECT, JW_PRETTY); // open root node as object
+    Json jw(buffer, BUFFER_LEN); // Create jWrite instance to use application buffer
+    jw.open(NodeType::JS_OBJECT, JW_PRETTY); // open root node as object
     jw.add("key", "value"); // writes "key":"value"
     jw.add("int", 1);          // writes "int":1
     jw.add("Double", 3.56);     //writes "Double":3.56
     jw.add("Bool", true);       // writes "Bool":true
     jw.add("NotBool", 1);       // writes "NotBool":1 (This is an integer)
-    jw.add("anArray", JsonNodeType::JS_ARRAY);       // start "anArray": [...]
+    jw.add("anArray", NodeType::JS_ARRAY);       // start "anArray": [...]
     jw.add(0);                 // add a few integers to the array
     jw.add(1);
     jw.add(2);
 
-    jw.add(JsonNodeType::JS_NULL);      // Writes null
-    jw.add(JsonNodeType::JS_ARRAY);     // Writes [
+    jw.add(NodeType::JS_NULL);      // Writes null
+    jw.add(NodeType::JS_ARRAY);     // Writes [
     jw.add("StringInArray");            // Writes "StringInArray"
     jw.add(3.14159265);                 // Writes 3.14159265
     jw.add(false);                      // Writes false
     jw.add((bool)1);                    // Writes true
     jw.end();   // Close array ]
-    jw.add(JsonNodeType::JS_OBJECT);    // Writes {
+    jw.add(NodeType::JS_OBJECT);    // Writes {
     jw.end();   // Close object }
 
     jw.end(); // end the array
 
-    jw.add("ObjectObject", JsonNodeType::JS_OBJECT);    // Writes "ObjectObject": {
-    jw.add("ObjectNull", JsonNodeType::JS_NULL);        // Writes "ObjectNull": null
-    jw.add("ObjectArray", JsonNodeType::JS_ARRAY);      // Writes "ObjectArray": [
+    jw.add("ObjectObject", NodeType::JS_OBJECT);    // Writes "ObjectObject": {
+    jw.add("ObjectNull", NodeType::JS_NULL);        // Writes "ObjectNull": null
+    jw.add("ObjectArray", NodeType::JS_ARRAY);      // Writes "ObjectArray": [
     jw.end();   // Close array
     jw.end();   // Close object
 
