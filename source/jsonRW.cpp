@@ -534,7 +534,7 @@ int Json::add(NodeType nodeType)
 	// - destBuffer is always '\0'-terminated (even on zero lenght returns)
 	// - returns pointer to destBuffer
 	//
-	char *Json::jRead_strcpy( char *destBuffer, int destLength, struct ReadElement *pElement )
+	char *Json::copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement )
 	{
 		int i;
 		int len= pElement->bytelen;
@@ -551,14 +551,14 @@ int Json::add(NodeType nodeType)
 		return destBuffer;
 	}
 
-	// jReadCountObject
+	// getObjectLength
 	// - used when query ends at an object, we want to return the object length
 	// - on entry pJson -> "{... "
 	// - used to skip unwanted values which are objects
 	// - keyIndex normally passed as -1 unless we're looking for the nth "key" value
 	//   in which case keyIndex is the index of the key we want
 	//
-	const char * Json::jReadCountObject( const char *pJson, struct ReadElement *pResult, int keyIndex )
+	const char * Json::getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex )
 	{
 		struct ReadElement jElement;
 		int jTok;
@@ -623,12 +623,12 @@ int Json::add(NodeType nodeType)
 
 
 
-	// jReadCountArray
+	// getArrayLength
 	// - used when query ends at an array, we want to return the array length
 	// - on entry pJson -> "[... "
 	// - used to skip unwanted values which are arrays
 	//
-	const char * Json::jReadCountArray( const char *pJson, struct ReadElement *pResult )
+	const char * Json::getArrayLength( const char *pJson, struct ReadElement *pResult )
 	{
 		struct ReadElement jElement;
 		int jTok;
@@ -727,7 +727,7 @@ int Json::add(NodeType nodeType)
 
 		case JREAD_OBJECT:		// "{"
 			if( qTok == JREAD_EOL )
-				return jReadCountObject( pJson, pResult, -1 );	// return length of object 
+				return getObjectLength( pJson, pResult, -1 );	// return length of object 
 
 			pQuery= findTok( ++pQuery, &qTok );			// "('key'...", "{NUMBER", "{*" or EOL
 			if( qTok != JREAD_STRING )
@@ -736,7 +736,7 @@ int Json::add(NodeType nodeType)
 				switch( qTok )
 				{
 				case JREAD_NUMBER:
-					pQuery= jRead_atoi( (char *)pQuery, &index );	// index value
+					pQuery= read_atoi( (char *)pQuery, &index );	// index value
 					break;
 				case JREAD_QPARAM:
 					pQuery++;
@@ -746,7 +746,7 @@ int Json::add(NodeType nodeType)
 					pResult->error= 12;								// Bad Object key
 					return pJson;
 				}
-				return jReadCountObject( pJson, pResult, index );
+				return getObjectLength( pJson, pResult, index );
 			}
 
 			pQuery= getElementString( pQuery, &qElement, QUERY_QUOTE );	// qElement = query 'key'
@@ -794,13 +794,13 @@ int Json::add(NodeType nodeType)
 			// read index, skip values 'til index
 			//
 			if( qTok == JREAD_EOL )
-				return jReadCountArray( pJson, pResult );	// return length of object 
+				return getArrayLength( pJson, pResult );	// return length of object 
 
 			index= 0;
 			pQuery= findTok( ++pQuery, &qTok );		// "[NUMBER" or "[*"
 			if( qTok == JREAD_NUMBER )		
 			{
-				pQuery= jRead_atoi( pQuery, &index );		// get array index	
+				pQuery= read_atoi( pQuery, &index );		// get array index	
 			}else if( qTok == JREAD_QPARAM )
 			{
 				pQuery++;
@@ -974,7 +974,7 @@ int Json::add(NodeType nodeType)
 	}
 
 	// read unsigned int from string
-	const char *Json::jRead_atoi( const char *p, unsigned int *result )
+	const char *Json::read_atoi( const char *p, unsigned int *result )
 	{
 		unsigned int x = 0;
 		while (*p >= '0' && *p <= '9') {

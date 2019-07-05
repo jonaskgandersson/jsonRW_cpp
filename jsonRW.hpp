@@ -196,10 +196,10 @@ namespace jonaskgandersson
 		const char *getElementString( const char *pJson, struct ReadElement *pElem, char quote );
 		int	getElementStringLenght( const char *pJson );
 		int equalElement( struct ReadElement *j1, struct ReadElement *j2 );
-		const char *jReadCountObject( const char *pJson, struct ReadElement *pResult, int keyIndex );
-		const char *jReadCountArray( const char *pJson, struct ReadElement *pResult );
-		const char *jRead_atoi( const char *p, unsigned int *result );
-		char * jRead_strcpy( char *destBuffer, int destLength, struct ReadElement *pElement );
+		const char *getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex );
+		const char *getArrayLength( const char *pJson, struct ReadElement *pResult );
+		const char *read_atoi( const char *p, unsigned int *result );
+		char *copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement );
 		//=======================================================
 
 	  public:
