@@ -495,6 +495,15 @@ const char *Json::getArrayElement( const char *pJsonArray, struct ReadElement *p
 // returns: pointer into pJson
 //
 // Note: is recursive
+const char *Json::getElement( const char *pQuery, struct ReadElement *pResult )
+{
+	return getElement( (const char*)buffer, pQuery, pResult, NULL);
+}
+
+const char *Json::getElement( const char *pQuery, int *queryParams , struct ReadElement *pResult )
+{
+	return getElement( (const char*)buffer, pQuery, pResult, queryParams);
+}
 
 const char *Json::getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams )
 {

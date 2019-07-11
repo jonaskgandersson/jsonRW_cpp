@@ -132,21 +132,21 @@ namespace jonaskgandersson
 		};
 
 		const char * jReadErrorStrings[15]={
-		"Ok",                                       // 0
-		"JSON does not match Query",                // 1
-		"Error reading JSON value",                 // 2
-		"Expected \"key\"",                         // 3
-		"Expected ':'",                             // 4
-		"Object key not found",                     // 5
-		"Expected ',' in object",                   // 6
-		"Terminal value found before end of query", // 7
-		"Unexpected character",                     // 8
-		"Expected ',' in array",                    // 9
-		"Array element not found (bad index)",      // 10
-		"Object key not found (bad index)",			// 11
-		"Bad object key",							// 12
-		"End of array found",						// 13
-		"End of object found"						// 14
+			"Ok",                                       // 0
+			"JSON does not match Query",                // 1
+			"Error reading JSON value",                 // 2
+			"Expected \"key\"",                         // 3
+			"Expected ':'",                             // 4
+			"Object key not found",                     // 5
+			"Expected ',' in object",                   // 6
+			"Terminal value found before end of query", // 7
+			"Unexpected character",                     // 8
+			"Expected ',' in array",                    // 9
+			"Array element not found (bad index)",      // 10
+			"Object key not found (bad index)",			// 11
+			"Bad object key",							// 12
+			"End of array found",						// 13
+			"End of object found"						// 14
 		};
 
 		/**
@@ -227,14 +227,14 @@ namespace jonaskgandersson
 		//------------------------------------------------------
 		// Internal Functions
 
-		const char *skipWhitespace( const char *sp );
-		const char *findTok( const char *sp, int *tokType );
-		const char *getElementString( const char *pJson, struct ReadElement *pElem, char quote );
-		int	getElementStringLenght( const char *pJson );
-		int equalElement( struct ReadElement *j1, struct ReadElement *j2 );
-		const char *getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex );
-		const char *getArrayLength( const char *pJson, struct ReadElement *pResult );
-		char *copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement );
+		static const char *skipWhitespace( const char *sp );
+		static const char *findTok( const char *sp, int *tokType );
+		static const char *getElementString( const char *pJson, struct ReadElement *pElem, char quote );
+		static int	getElementStringLenght( const char *pJson );
+		static int equalElement( struct ReadElement *j1, struct ReadElement *j2 );
+		static const char *getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex );
+		static const char *getArrayLength( const char *pJson, struct ReadElement *pResult );
+		static char *copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement );
 		//=======================================================
 
 	  public:
@@ -421,14 +421,17 @@ namespace jonaskgandersson
 		// You can supply an array of integers which are indexed for each '*' in pQuery
 		// however, horrid things will happen if you don't supply enough parameters
 		// 
-		const char *getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams=NULL );
+		const char *getElement( const char *pQuery, struct ReadElement *pResult );
+		const char *getElement( const char *pQuery, int *queryParams , struct ReadElement *pResult );
+
+		static const char *getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams=NULL );
 
 		// Array Stepping function
 		// - assumes pJsonArray is JSON source of an array "[ ... ]"
 		// - returns next element of the array in pResult
 		// - returns pointer to end of element, to be passed to next call of jReadArrayStep()
 		// - if end of array is encountered, pResult->error = 13 "End of array found"
-		const char *getArrayElement( const char *pJsonArray, struct ReadElement *pResult );
+		static const char *getArrayElement( const char *pJsonArray, struct ReadElement *pResult );
 		
 		//------------------------------------------------------
 		// Optional Helper Functions

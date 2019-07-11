@@ -9,7 +9,7 @@ using namespace jonaskgandersson;
 void testQuery(Json& oJson, char * pJson, const char *query )
 {
 	struct ReadElement jElement;
-	oJson.getElement( pJson, query, &jElement );
+	oJson.getElement( query, &jElement );
 	printf( "Query: \"%s\"\n", query );
 	//printf( "return: %d= %s\n", jElement.error, oJson.jReadErrorToString(jElement.error) );
 	//printf( " dataType = %s\n", oJson.jReadTypeToString(jElement.dataType) );
