@@ -65,7 +65,10 @@ int main(int argc, char *argv[])
     }
 
 	// Read test
+	double json_pi;
 	testQuery(jw, buffer,"{'key'"); 
 
+	json_pi = jw.jRead_double(buffer,"{'anArray'[4[1", NULL);
+	printf("Json Pi: %f\r\n", json_pi);
     return 0;
 }
