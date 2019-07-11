@@ -110,6 +110,44 @@ namespace jonaskgandersson
 		int stackpos;
 		int isPretty; // 1= pretty output (inserts \n and spaces)
 		// private methods:
+		
+		//-------------------------------------------------
+		// Optional String output Functions
+		//
+		const char *jReadTypeStrings[14]={
+			"Error",			// 0
+			"Object",			// 1
+			"Array",			// 2
+			"String",			// 3
+			"Number",			// 4
+			"Bool",				// 5
+			"null",				// 6
+			"Object key",		// 7
+			"colon",			// 8
+			"eol",				// 9
+			"comma",			// 10
+			"}",				// 11
+			"]",				// 12
+			"* parameter"		// 13
+		};
+
+		const char * jReadErrorStrings[15]={
+		"Ok",                                       // 0
+		"JSON does not match Query",                // 1
+		"Error reading JSON value",                 // 2
+		"Expected \"key\"",                         // 3
+		"Expected ':'",                             // 4
+		"Object key not found",                     // 5
+		"Expected ',' in object",                   // 6
+		"Terminal value found before end of query", // 7
+		"Unexpected character",                     // 8
+		"Expected ',' in array",                    // 9
+		"Array element not found (bad index)",      // 10
+		"Object key not found (bad index)",			// 11
+		"Bad object key",							// 12
+		"End of array found",						// 13
+		"End of object found"						// 14
+		};
 
 		/**
 		 * @brief Write character to buffer
@@ -135,8 +173,6 @@ namespace jonaskgandersson
 		 * @param str NULL terminated string to write to buffer
 		 */
 		void putraw(const char *str);
-		void modp_itoa10(int value, char *str);
-		void modp_dtoa2(double value, char *str, int prec);
 
 		/**
 		 * @brief Pretty printing
@@ -198,7 +234,6 @@ namespace jonaskgandersson
 		int equalElement( struct ReadElement *j1, struct ReadElement *j2 );
 		const char *getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex );
 		const char *getArrayLength( const char *pJson, struct ReadElement *pResult );
-		const char *read_atoi( const char *p, unsigned int *result );
 		char *copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement );
 		//=======================================================
 
@@ -394,7 +429,25 @@ namespace jonaskgandersson
 		// - returns pointer to end of element, to be passed to next call of jReadArrayStep()
 		// - if end of array is encountered, pResult->error = 13 "End of array found"
 		const char *getArrayElement( const char *pJsonArray, struct ReadElement *pResult );
+		
+		//------------------------------------------------------
+		// Optional Helper Functions
+		//
+		long jRead_long( const char *pJson, const char *pQuery, int *queryParams );
+		int jRead_int( const char *pJson, const char *pQuery, int *queryParams );
+		double jRead_double( const char *pJson, const char *pQuery, int *queryParams );
+		int jRead_string( const char *pJson, const char *pQuery, char *pDest, int destlen, int *queryParams );
 
+		//------------------------------------------------------
+		// Optional String output Functions
+		//
+		const char *jReadTypeToString( int dataType );	   	// string describes dataType
+		const char *jReadErrorToString( int error );		   	// string descibes error code
+
+		int jReadStrcmp( struct jReadElement *j1, struct jReadElement *j2 ); // compare STRING elements
+
+		// copy element to '\0'-terminated buffer
+		char * jRead_strcpy( char *destBuffer, int destLength, struct jReadElement *pElement );
 
 	};
 }
