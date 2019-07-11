@@ -66,7 +66,21 @@ int main(int argc, char *argv[])
 
 	// Read test
 	double json_pi;
-	testQuery(jw, buffer,"{'key'"); 
+	testQuery(jw, buffer,"{'key'");
+
+    // Get an element from an raw json string
+    ReadElement rElement;
+    Json::getElement( buffer, "{'Bool'", &rElement);
+    printf( " Bool    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
+
+    // Get an element from json object
+    jw.getElement("{'anArray'[4[1", &rElement);
+    printf( " value    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
+
+    // Using quaryParams as index
+    int index = 4;
+    jw.getElement("{'anArray'[*[0", &index, &rElement);
+    printf( " value    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
 
 	json_pi = jw.jRead_double(buffer,"{'anArray'[4[1", NULL);
 	printf("Json Pi: %f\r\n", json_pi);
