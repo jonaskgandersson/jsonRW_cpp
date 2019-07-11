@@ -495,14 +495,14 @@ const char *Json::getArrayElement( const char *pJsonArray, struct ReadElement *p
 // returns: pointer into pJson
 //
 // Note: is recursive
-const char *Json::getElement( const char *pQuery, struct ReadElement *pResult )
+const char *Json::getElement( const char *pQuery, struct ReadElement &pResult )
 {
-	return getElement( (const char*)buffer, pQuery, pResult, NULL);
+	return getElement( (const char*)buffer, pQuery, &pResult, NULL);
 }
 
-const char *Json::getElement( const char *pQuery, int *queryParams , struct ReadElement *pResult )
+const char *Json::getElement( const char *pQuery, int *queryParams , struct ReadElement &pResult )
 {
-	return getElement( (const char*)buffer, pQuery, pResult, queryParams);
+	return getElement( (const char*)buffer, pQuery, &pResult, queryParams);
 }
 
 const char *Json::getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams )
@@ -818,15 +818,24 @@ int Json::jRead_int( const char *pJson, const char *pQuery, int *queryParams )
 // - returns number from NUMBER or STRING elements
 //   otherwise returns 0.0
 //
-double Json::jRead_double( const char *pJson, const char *pQuery, int *queryParams )
+ReadError Json::jRead_double(const char *pQuery, double &value )
+{
+	return jRead_double( buffer, pQuery, NULL, &value );
+}
+
+ReadError Json::jRead_double(const char *pQuery, int *queryParams, double &value )
+{
+	return jRead_double( buffer, pQuery, queryParams, &value );
+}
+
+ReadError Json::jRead_double( const char *pJson, const char *pQuery, int *queryParams, double *value )
 {
 	struct ReadElement elem;
-	double result;
 	getElement( pJson, pQuery, &elem, queryParams );
 	if( elem.dataType == JREAD_ERROR )
-		return 0.0;
-	jRead_atof( (char *)elem.pValue, &result );
-	return result;
+		return ReadError::JS_ERROR;
+	jRead_atof( (char *)elem.pValue, value );
+	return ReadError::JS_OK;
 }
 
 // jRead_string

@@ -88,6 +88,12 @@ namespace jonaskgandersson
 		JS_NULL
 	};
 
+	enum class ReadError
+	{
+		JS_OK = 1,
+		JS_ERROR
+	};
+
 	/**
 	 * @brief JSON object class
 	 * 
@@ -421,8 +427,8 @@ namespace jonaskgandersson
 		// You can supply an array of integers which are indexed for each '*' in pQuery
 		// however, horrid things will happen if you don't supply enough parameters
 		// 
-		const char *getElement( const char *pQuery, struct ReadElement *pResult );
-		const char *getElement( const char *pQuery, int *queryParams , struct ReadElement *pResult );
+		const char *getElement( const char *pQuery, struct ReadElement &pResult );
+		const char *getElement( const char *pQuery, int *queryParams , struct ReadElement &pResult );
 
 		static const char *getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams=NULL );
 
@@ -438,7 +444,11 @@ namespace jonaskgandersson
 		//
 		long jRead_long( const char *pJson, const char *pQuery, int *queryParams );
 		int jRead_int( const char *pJson, const char *pQuery, int *queryParams );
-		double jRead_double( const char *pJson, const char *pQuery, int *queryParams );
+
+		ReadError jRead_double(const char *pQuery, double &value);
+		ReadError jRead_double(const char *pQuery, int *queryParams, double &value);
+		static ReadError jRead_double( const char *pJson, const char *pQuery, int *queryParams, double *value );
+
 		int jRead_string( const char *pJson, const char *pQuery, char *pDest, int destlen, int *queryParams );
 
 		//------------------------------------------------------

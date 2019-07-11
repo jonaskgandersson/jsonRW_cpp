@@ -9,7 +9,7 @@ using namespace jonaskgandersson;
 void testQuery(Json& oJson, char * pJson, const char *query )
 {
 	struct ReadElement jElement;
-	oJson.getElement( query, &jElement );
+	oJson.getElement( query, jElement );
 	printf( "Query: \"%s\"\n", query );
 	//printf( "return: %d= %s\n", jElement.error, oJson.jReadErrorToString(jElement.error) );
 	//printf( " dataType = %s\n", oJson.jReadTypeToString(jElement.dataType) );
@@ -74,15 +74,20 @@ int main(int argc, char *argv[])
     printf( " Bool    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
 
     // Get an element from json object
-    jw.getElement("{'anArray'[4[1", &rElement);
+    jw.getElement("{'anArray'[4[1", rElement);
     printf( " value    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
 
     // Using quaryParams as index
-    int index = 4;
-    jw.getElement("{'anArray'[*[0", &index, &rElement);
+    int index[] = {4};
+    jw.getElement("{'anArray'[*[0", index, rElement);
     printf( " value    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
 
-	json_pi = jw.jRead_double(buffer,"{'anArray'[4[1", NULL);
-	printf("Json Pi: %f\r\n", json_pi);
+	if(jw.jRead_double("{'anArray'[4[1", json_pi) == ReadError::JS_OK)
+    {
+        printf("Json Pi: %f\r\n", json_pi);
+    }else{
+        printf("Json Pi: Unknown\r\n");
+    }
+
     return 0;
 }
