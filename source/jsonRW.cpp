@@ -497,15 +497,20 @@ const char *Json::getArrayElement( const char *pJsonArray, struct ReadElement *p
 // Note: is recursive
 const char *Json::getElement( const char *pQuery, struct ReadElement &pResult )
 {
-	return getElement( (const char*)buffer, pQuery, &pResult, NULL);
+	return getElement( (const char*)buffer, pQuery, NULL, &pResult);
 }
 
 const char *Json::getElement( const char *pQuery, int *queryParams , struct ReadElement &pResult )
 {
-	return getElement( (const char*)buffer, pQuery, &pResult, queryParams);
+	return getElement( (const char*)buffer, pQuery, queryParams, &pResult);
 }
 
-const char *Json::getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams )
+const char *Json::getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult )
+{
+	return getElement( pJson, pQuery, NULL, pResult );
+}
+
+const char *Json::getElement( const char *pJson, const char *pQuery, int *queryParams, struct ReadElement *pResult )
 {
 	int qTok, jTok, bytelen;
 	unsigned int index, count;
@@ -577,10 +582,10 @@ const char *Json::getElement( const char *pJson, const char *pQuery, struct Read
 			if( equalElement( &qElement, &jElement ) == 0 )
 			{
 				// found object key
-				return getElement( ++pJson, pQuery, pResult, queryParams );
+				return getElement( ++pJson, pQuery, queryParams, pResult );
 			}
 			// no key match... skip this value
-			pJson= getElement( ++pJson, "", pResult, NULL );
+			pJson= getElement( ++pJson, "", NULL, pResult );
 			pJson= findTok( pJson, &jTok );
 			if( jTok == JREAD_EOBJECT )
 			{
@@ -616,9 +621,9 @@ const char *Json::getElement( const char *pJson, const char *pQuery, struct Read
 		while( 1 )
 		{
 			if( count == index )
-				return getElement( ++pJson, pQuery, pResult, queryParams );	// return value at index
+				return getElement( ++pJson, pQuery, queryParams, pResult );	// return value at index
 			// not this index... skip this value
-			pJson= getElement( ++pJson, "", &jElement, NULL );
+			pJson= getElement( ++pJson, "", NULL, &jElement );
 			if( pResult->error )
 				break;
 			count++;				
@@ -798,7 +803,7 @@ long Json::jRead_long( const char *pJson, const char *pQuery, int *queryParams )
 {
 	struct ReadElement elem;
 	long result;
-	getElement( pJson, pQuery, &elem, queryParams );
+	getElement( pJson, pQuery, queryParams, &elem);
 	if( (elem.dataType == JREAD_ERROR) || (elem.dataType == JREAD_NULL))
 		return 0;
 	if( elem.dataType == JREAD_BOOL )
@@ -831,7 +836,7 @@ ReadError Json::jRead_double(const char *pQuery, int *queryParams, double &value
 ReadError Json::jRead_double( const char *pJson, const char *pQuery, int *queryParams, double *value )
 {
 	struct ReadElement elem;
-	getElement( pJson, pQuery, &elem, queryParams );
+	getElement( pJson, pQuery, queryParams, &elem);
 	if( elem.dataType == JREAD_ERROR )
 		return ReadError::JS_ERROR;
 	jRead_atof( (char *)elem.pValue, value );
@@ -850,7 +855,7 @@ int Json::jRead_string( const char *pJson, const char *pQuery, char *pDest, int 
 	int i;
 
 	*pDest= '\0';
-	getElement( pJson, pQuery, &elem, queryParams );
+	getElement( pJson, pQuery, queryParams, &elem );
 	if( elem.dataType == JREAD_ERROR )
 		return 0;
 

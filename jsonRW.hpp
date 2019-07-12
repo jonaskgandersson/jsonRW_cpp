@@ -430,7 +430,8 @@ namespace jonaskgandersson
 		const char *getElement( const char *pQuery, struct ReadElement &pResult );
 		const char *getElement( const char *pQuery, int *queryParams , struct ReadElement &pResult );
 
-		static const char *getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult, int *queryParams=NULL );
+		static const char *getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult );
+		static const char *getElement( const char *pJson, const char *pQuery, int *queryParams, struct ReadElement *pResult );
 
 		// Array Stepping function
 		// - assumes pJsonArray is JSON source of an array "[ ... ]"
