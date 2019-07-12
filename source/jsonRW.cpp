@@ -823,17 +823,17 @@ int Json::jRead_int( const char *pJson, const char *pQuery, int *queryParams )
 // - returns number from NUMBER or STRING elements
 //   otherwise returns 0.0
 //
-ReadError Json::jRead_double(const char *pQuery, double &value )
+ReadError Json::getValue(const char *pQuery, double &value )
 {
-	return jRead_double( buffer, pQuery, NULL, &value );
+	return getValue( buffer, pQuery, NULL, &value );
 }
 
-ReadError Json::jRead_double(const char *pQuery, int *queryParams, double &value )
+ReadError Json::getValue(const char *pQuery, int *queryParams, double &value )
 {
-	return jRead_double( buffer, pQuery, queryParams, &value );
+	return getValue( buffer, pQuery, queryParams, &value );
 }
 
-ReadError Json::jRead_double( const char *pJson, const char *pQuery, int *queryParams, double *value )
+ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, double *value )
 {
 	struct ReadElement elem;
 	getElement( pJson, pQuery, queryParams, &elem);

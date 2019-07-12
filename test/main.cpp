@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     jw.getElement("{'anArray'[*[0", index, rElement);
     printf( " value    = %*.*s\n\n", rElement.bytelen,rElement.bytelen, (const char*)rElement.pValue );
 
-	if(jw.jRead_double("{'anArray'[4[1", json_pi) == ReadError::JS_OK)
+	if(jw.getValue("{'anArray'[4[1", json_pi) == ReadError::JS_OK)
     {
         printf("Json Pi: %f\r\n", json_pi);
     }else{

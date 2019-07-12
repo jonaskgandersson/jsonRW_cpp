@@ -446,9 +446,9 @@ namespace jonaskgandersson
 		long jRead_long( const char *pJson, const char *pQuery, int *queryParams );
 		int jRead_int( const char *pJson, const char *pQuery, int *queryParams );
 
-		ReadError jRead_double(const char *pQuery, double &value);
-		ReadError jRead_double(const char *pQuery, int *queryParams, double &value);
-		static ReadError jRead_double( const char *pJson, const char *pQuery, int *queryParams, double *value );
+		ReadError getValue(const char *pQuery, double &value);
+		ReadError getValue(const char *pQuery, int *queryParams, double &value);
+		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, double *value );
 
 		int jRead_string( const char *pJson, const char *pQuery, char *pDest, int destlen, int *queryParams );
 
