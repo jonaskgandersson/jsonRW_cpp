@@ -883,7 +883,7 @@ ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParam
 {
 	struct ReadElement elem;
 	getElement( pJson, pQuery, queryParams, &elem);
-	if( elem.dataType == JREAD_BOOL )
+	if( elem.dataType == JREAD_BOOL ||  elem.dataType == JREAD_NULL)
 	{
 		*value = (*(char*)elem.pValue == 't') ? true:false;
 		return ReadError::JS_OK;

@@ -175,6 +175,17 @@ int main(int argc, char *argv[])
     {
         printf("Json bool : Unkown\r\n");
     }
-    
+
+    // Get bool from json object using inedx
+    index[0] = 3;
+    if( jw.getValue( "{'anArray'[*", index, json_bool) == ReadError::JS_OK)
+    {
+        printf("Json bool: %s\r\n", json_bool ? "true":"false");
+    }
+    else
+    {
+        printf("Json bool : Unkown\r\n");
+    }
+
     return 0;
 }
