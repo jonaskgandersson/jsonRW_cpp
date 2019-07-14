@@ -799,23 +799,47 @@ int Json::equalElement( struct ReadElement *j1, struct ReadElement *j2 )
 //   returns 1 or 0 from BOOL elements
 //   otherwise returns 0
 //
-long Json::jRead_long( const char *pJson, const char *pQuery, int *queryParams )
+ReadError Json::getValue( const char *pQuery, long &value )
 {
-	struct ReadElement elem;
-	long result;
-	getElement( pJson, pQuery, queryParams, &elem);
-	if( (elem.dataType == JREAD_ERROR) || (elem.dataType == JREAD_NULL))
-		return 0;
-	if( elem.dataType == JREAD_BOOL )
-		return *((char *)elem.pValue)=='t' ? 1 : 0;
-
-	jRead_atol( (char *)elem.pValue, &result );
-	return result;
+	return getValue( buffer, pQuery, NULL, &value );
 }
 
-int Json::jRead_int( const char *pJson, const char *pQuery, int *queryParams )
+ReadError Json::getValue( const char *pQuery, int *queryParams, long &value )
 {
-	return (int)jRead_long( pJson, pQuery, queryParams );
+	return getValue( buffer, pQuery, queryParams, &value );
+}
+ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, long *value )
+{
+	struct ReadElement elem;
+	getElement( pJson, pQuery, queryParams, &elem);
+	if( (elem.dataType == JREAD_ERROR) || (elem.dataType == JREAD_NULL)){
+		return ReadError::JS_ERROR;	
+	}		
+	else if( elem.dataType == JREAD_BOOL )
+	{
+		*value = *((char *)elem.pValue)=='t' ? 1 : 0;
+	}else{
+		jRead_atol( (char *)elem.pValue, value );
+	}
+	return ReadError::JS_OK;	
+}
+
+ReadError Json::getValue( const char *pQuery, int &value )
+{
+	return getValue( buffer, pQuery, NULL, &value);
+}
+
+ReadError Json::getValue( const char *pQuery, int *queryParams, int &value )
+{
+	return getValue( buffer, pQuery, queryParams, &value);
+}
+ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, int *value )
+{
+	long rValue;
+	ReadError error;
+	error = getValue( pJson, pQuery, queryParams,  &rValue);
+	*value = (int)rValue;
+	return error;
 }
 
 // jRead_double
@@ -849,7 +873,7 @@ ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParam
 //
 // Note: any element can be returned as a string
 //
-int Json::jRead_string( const char *pJson, const char *pQuery, char *pDest, int destlen, int *queryParams )
+ReadError Json::jRead_string( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen )
 {
 	struct ReadElement elem;
 	int i;
@@ -857,12 +881,12 @@ int Json::jRead_string( const char *pJson, const char *pQuery, char *pDest, int 
 	*pDest= '\0';
 	getElement( pJson, pQuery, queryParams, &elem );
 	if( elem.dataType == JREAD_ERROR )
-		return 0;
+		return ReadError::JS_ERROR;
 
 	for( i=0; (i<elem.bytelen) && (i<destlen-1); i++ )
 		*pDest++ = ((char *)elem.pValue)[i];
 	*pDest= '\0';
-	return elem.bytelen;
+	return ReadError::JS_OK;
 }
 
 const char *Json::jReadTypeToString( int dataType )

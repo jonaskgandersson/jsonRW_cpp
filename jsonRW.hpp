@@ -443,14 +443,19 @@ namespace jonaskgandersson
 		//------------------------------------------------------
 		// Optional Helper Functions
 		//
-		long jRead_long( const char *pJson, const char *pQuery, int *queryParams );
-		int jRead_int( const char *pJson, const char *pQuery, int *queryParams );
+		ReadError getValue( const char *pQuery, long &value );
+		ReadError getValue( const char *pQuery, int *queryParams, long &value );
+		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, long *value );
+
+		ReadError getValue( const char *pQuery, int &value );
+		ReadError getValue( const char *pQuery, int *queryParams, int &value );
+		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, int *value );
 
 		ReadError getValue(const char *pQuery, double &value);
 		ReadError getValue(const char *pQuery, int *queryParams, double &value);
 		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, double *value );
 
-		int jRead_string( const char *pJson, const char *pQuery, char *pDest, int destlen, int *queryParams );
+		static ReadError jRead_string( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen );
 
 		//------------------------------------------------------
 		// Optional String output Functions
