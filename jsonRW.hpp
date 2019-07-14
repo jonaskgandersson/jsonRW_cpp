@@ -467,13 +467,6 @@ namespace jonaskgandersson
 		// Optional String output Functions
 		//
 		const char *jReadTypeToString( int dataType );	   	// string describes dataType
-		const char *jReadErrorToString( int error );		   	// string descibes error code
-
-		int jReadStrcmp( struct jReadElement *j1, struct jReadElement *j2 ); // compare STRING elements
-
-		// copy element to '\0'-terminated buffer
-		char * jRead_strcpy( char *destBuffer, int destLength, struct jReadElement *pElement );
-
+		const char *jReadErrorToString( int error );		// string descibes error code
 	};
 }
-
