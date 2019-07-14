@@ -455,7 +455,13 @@ namespace jonaskgandersson
 		ReadError getValue(const char *pQuery, int *queryParams, double &value);
 		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, double *value );
 
-		static ReadError jRead_string( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen );
+		ReadError getValue( const char *pQuery, char *pDest, int destlen );
+		ReadError getValue( const char *pQuery, int *queryParams, char *pDest, int destlen );
+		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen );
+
+		ReadError getValue( const char *pQuery, bool &value );
+		ReadError getValue( const char *pQuery, int *queryParams, bool &value );
+		static ReadError getValue( const char *pJson, const char *pQuery, int *queryParams, bool *value );
 
 		//------------------------------------------------------
 		// Optional String output Functions

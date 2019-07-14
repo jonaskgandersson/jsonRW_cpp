@@ -867,13 +867,48 @@ ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParam
 	return ReadError::JS_OK;
 }
 
+// jRead_boolean
+// - returns bool from JSON
+// - returns error code
+//
+ReadError Json::getValue( const char *pQuery,  bool &value )
+{
+	return getValue( buffer, pQuery, NULL, &value );
+}
+ReadError Json::getValue( const char *pQuery, int *queryParams, bool &value )
+{
+	return getValue( buffer, pQuery, queryParams, &value );
+}
+ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, bool *value )
+{
+	struct ReadElement elem;
+	getElement( pJson, pQuery, queryParams, &elem);
+	if( elem.dataType == JREAD_BOOL )
+	{
+		*value = (*(char*)elem.pValue == 't') ? true:false;
+		return ReadError::JS_OK;
+	}
+	else
+	{
+		return ReadError::JS_ERROR;
+	}
+}
+
 // jRead_string
 // Copy string to pDest and '\0'-terminate it (upto destlen total bytes)
 // returns: character length of string (excluding '\0' terminator)
 //
 // Note: any element can be returned as a string
 //
-ReadError Json::jRead_string( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen )
+ReadError Json::getValue( const char *pQuery, char *pDest, int destlen )
+{
+	return getValue( buffer, pQuery, NULL, pDest, destlen);
+}
+ReadError Json::getValue( const char *pQuery, int *queryParams, char *pDest, int destlen )
+{
+	return getValue( buffer, pQuery, queryParams, pDest, destlen);
+}
+ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen )
 {
 	struct ReadElement elem;
 	int i;

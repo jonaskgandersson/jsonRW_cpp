@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 
     // Get string from raw json
     char json_string[100];
-    if( Json::jRead_string( buffer, "{'anArray'[4[0", NULL, json_string, 100) == ReadError::JS_OK)
+    if( Json::getValue( buffer, "{'anArray'[4[0", NULL, json_string, 100) == ReadError::JS_OK)
     {
         printf("Json string: %s\r\n", json_string);
     }
@@ -145,5 +145,36 @@ int main(int argc, char *argv[])
         printf("Json string: Unknown\r\n");
     }
 
+    // Get string from json object
+    if( jw.getValue( "{'anArray'[4[0", NULL, json_string, 100) == ReadError::JS_OK)
+    {
+        printf("Json string: %s\r\n", json_string);
+    }
+    else
+    {
+        printf("Json string: Unknown\r\n");
+    }
+
+    // Get bool from raw json
+    bool json_bool;
+    if( Json::getValue( buffer, "{'Bool'", NULL, &json_bool) == ReadError::JS_OK)
+    {
+        printf("Json bool: %s\r\n", json_bool ? "true":"false");
+    }
+    else
+    {
+        printf("Json bool : Unkown\r\n");
+    }
+    
+    // Get bool from json object
+    if( jw.getValue( "{'anArray'[4[2", json_bool) == ReadError::JS_OK)
+    {
+        printf("Json bool: %s\r\n", json_bool ? "true":"false");
+    }
+    else
+    {
+        printf("Json bool : Unkown\r\n");
+    }
+    
     return 0;
 }
