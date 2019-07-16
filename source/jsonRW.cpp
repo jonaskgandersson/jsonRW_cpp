@@ -16,7 +16,7 @@
 
 using namespace jonaskgandersson;
 
-Json::Json(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len), bufp(buffer), error(JWRITE_OK),  callNo(0), stackpos(0),  isPretty(false)
+Json::Json(char *pbuffer, int buf_len) : buffer(pbuffer), buflen(buf_len), bufp(buffer), error(JWRITE_OK), callNo(0), stackpos(0), isPretty(false)
 {
 }
 
@@ -115,7 +115,7 @@ int Json::add(NodeType nodeType)
 		if (_jwArr() == JWRITE_OK)
 		{
 			putch('{');
-				push(NodeType::JS_OBJECT);
+			push(NodeType::JS_OBJECT);
 		}
 	}
 	break;
@@ -330,20 +330,20 @@ int Json::_jwArr()
 // - destBuffer is always '\0'-terminated (even on zero lenght returns)
 // - returns pointer to destBuffer
 //
-char *Json::copyElementValue( char *destBuffer, int destLength, struct ReadElement *pElement )
+char *Json::copyElementValue(char *destBuffer, int destLength, struct ReadElement *pElement)
 {
 	int i;
-	int len= pElement->bytelen;
-	char *pdest= destBuffer;
-	char *psrc= (char *)pElement->pValue;
-	if( pElement->error == 0 )
+	int len = pElement->bytelen;
+	char *pdest = destBuffer;
+	char *psrc = (char *)pElement->pValue;
+	if (pElement->error == 0)
 	{
-		if( len >= destLength )
-			len= destLength;
-		for( i=0; i<destLength; i++ )
-			*pdest++= *psrc++;
+		if (len >= destLength)
+			len = destLength;
+		for (i = 0; i < destLength; i++)
+			*pdest++ = *psrc++;
 	}
-	*pdest= '\0';
+	*pdest = '\0';
 	return destBuffer;
 }
 
@@ -354,355 +354,359 @@ char *Json::copyElementValue( char *destBuffer, int destLength, struct ReadEleme
 // - keyIndex normally passed as -1 unless we're looking for the nth "key" value
 //   in which case keyIndex is the index of the key we want
 //
-const char * Json::getObjectLength( const char *pJson, struct ReadElement *pResult, int keyIndex )
+const char *Json::getObjectLength(const char *pJson, struct ReadElement *pResult, int keyIndex)
 {
 	struct ReadElement jElement;
 	int jTok;
 	const char *sp;
-	pResult->dataType= JREAD_OBJECT;
-	pResult->error= 0;
-	pResult->elements= 0;
-	pResult->pValue= pJson;
-	sp= findTok( pJson+1, &jTok ); // check for empty object
-	if( jTok == JREAD_EOBJECT )		
+	pResult->dataType = JREAD_OBJECT;
+	pResult->error = 0;
+	pResult->elements = 0;
+	pResult->pValue = pJson;
+	sp = findTok(pJson + 1, &jTok); // check for empty object
+	if (jTok == JREAD_EOBJECT)
 	{
-		pJson= sp+1;
-	}else
+		pJson = sp + 1;
+	}
+	else
 	{
-		while( 1 )
+		while (1)
 		{
-			pJson= getElementString( ++pJson, &jElement, '\"' );
-			if( jElement.dataType != JREAD_STRING )
+			pJson = getElementString(++pJson, &jElement, '\"');
+			if (jElement.dataType != JREAD_STRING)
 			{
-				pResult->error= 3;		// Expected "key"
+				pResult->error = 3; // Expected "key"
 				break;
 			}
-			if( pResult->elements == keyIndex )		// if passed keyIndex
+			if (pResult->elements == keyIndex) // if passed keyIndex
 			{
-				*pResult= jElement;		// we return "key" at this index
-				pResult->dataType= JREAD_KEY;
+				*pResult = jElement; // we return "key" at this index
+				pResult->dataType = JREAD_KEY;
 				return pJson;
 			}
-			pJson= findTok( pJson, &jTok );
-			if( jTok != JREAD_COLON )
+			pJson = findTok(pJson, &jTok);
+			if (jTok != JREAD_COLON)
 			{
-				pResult->error= 4;		// Expected ":"
+				pResult->error = 4; // Expected ":"
 				break;
 			}
-			pJson= getElement( ++pJson, "", &jElement );
-			if( pResult->error )
+			pJson = getElement(++pJson, "", &jElement);
+			if (pResult->error)
 				break;
-			pJson= findTok( pJson, &jTok );
+			pJson = findTok(pJson, &jTok);
 			pResult->elements++;
-			if( jTok == JREAD_EOBJECT )
+			if (jTok == JREAD_EOBJECT)
 			{
 				pJson++;
 				break;
 			}
-			if( jTok != JREAD_COMMA )
+			if (jTok != JREAD_COMMA)
 			{
-				pResult->error= 6;		// Expected "," in object
+				pResult->error = 6; // Expected "," in object
 				break;
 			}
 		}
 	}
-	if( keyIndex >= 0 )
+	if (keyIndex >= 0)
 	{
 		// we wanted a "key" value - that we didn't find
-		pResult->dataType= JREAD_ERROR;
-		pResult->error= 11;			// Object key not found (bad index)
-	}else{
-		pResult->bytelen= pJson - (char *)pResult->pValue;
+		pResult->dataType = JREAD_ERROR;
+		pResult->error = 11; // Object key not found (bad index)
+	}
+	else
+	{
+		pResult->bytelen = pJson - (char *)pResult->pValue;
 	}
 	return pJson;
 }
-
-
 
 // getArrayLength
 // - used when query ends at an array, we want to return the array length
 // - on entry pJson -> "[... "
 // - used to skip unwanted values which are arrays
 //
-const char * Json::getArrayLength( const char *pJson, struct ReadElement *pResult )
+const char *Json::getArrayLength(const char *pJson, struct ReadElement *pResult)
 {
 	struct ReadElement jElement;
 	int jTok;
 	const char *sp;
-	pResult->dataType= JREAD_ARRAY;
-	pResult->error= 0;
-	pResult->elements= 0;
-	pResult->pValue= pJson;
-	sp= findTok( pJson+1, &jTok ); // check for empty array
-	if( jTok == JREAD_EARRAY )		
+	pResult->dataType = JREAD_ARRAY;
+	pResult->error = 0;
+	pResult->elements = 0;
+	pResult->pValue = pJson;
+	sp = findTok(pJson + 1, &jTok); // check for empty array
+	if (jTok == JREAD_EARRAY)
 	{
-		pJson= sp+1;
-	}else
+		pJson = sp + 1;
+	}
+	else
 	{
-		while( 1 )
+		while (1)
 		{
-			pJson= getElement( ++pJson, "", &jElement );	// array value
-			if( pResult->error )
+			pJson = getElement(++pJson, "", &jElement); // array value
+			if (pResult->error)
 				break;
-			pJson= findTok( pJson, &jTok );	// , or ]
+			pJson = findTok(pJson, &jTok); // , or ]
 			pResult->elements++;
-			if( jTok == JREAD_EARRAY )
+			if (jTok == JREAD_EARRAY)
 			{
 				pJson++;
 				break;
 			}
-			if( jTok != JREAD_COMMA )
+			if (jTok != JREAD_COMMA)
 			{
-				pResult->error= 9;		// Expected "," in array
+				pResult->error = 9; // Expected "," in array
 				break;
 			}
 		}
 	}
-	pResult->bytelen= pJson - (char *)pResult->pValue;
+	pResult->bytelen = pJson - (char *)pResult->pValue;
 	return pJson;
 }
 
-// getArrayElement()
-// - reads one value from an array
-// - assumes pJsonArray points at the start of an array or array element
-//
-const char *Json::getArrayElement( const char *pJsonArray, struct ReadElement *pResult )
+const char *Json::getArrayElement(const char *pJsonArray, struct ReadElement *pResult)
 {
 	int jTok;
 
-	pJsonArray= findTok( pJsonArray, &jTok );
-	switch( jTok )
+	pJsonArray = findTok(pJsonArray, &jTok);
+	switch (jTok)
 	{
-	case JREAD_ARRAY:	// start of array
-	case JREAD_COMMA:	// element separator
-		return getElement( ++pJsonArray, "", pResult );
+	case JREAD_ARRAY: // start of array
+	case JREAD_COMMA: // element separator
+		return getElement(++pJsonArray, "", pResult);
 
-	case JREAD_EARRAY:	// end of array
-		pResult->error= 13;		// End of array found
+	case JREAD_EARRAY:		 // end of array
+		pResult->error = 13; // End of array found
 		break;
-	default:			// some other error
-		pResult->error= 9;		// expected comma in array
+	default:				// some other error
+		pResult->error = 9; // expected comma in array
 		break;
 	}
-	pResult->dataType= JREAD_ERROR;
+	pResult->dataType = JREAD_ERROR;
 	return pJsonArray;
 }
 
-
-// jRead
-// - reads a complete JSON <value>
-// - matches pQuery against pJson, results in pResult
-// returns: pointer into pJson
-//
-// Note: is recursive
-const char *Json::getElement( const char *pQuery, struct ReadElement &pResult )
+const char *Json::getElement(const char *pQuery, struct ReadElement &pResult)
 {
-	return getElement( (const char*)buffer, pQuery, NULL, &pResult);
+	return getElement((const char *)buffer, pQuery, NULL, &pResult);
 }
 
-const char *Json::getElement( const char *pQuery, int *queryParams , struct ReadElement &pResult )
+const char *Json::getElement(const char *pQuery, int *queryParams, struct ReadElement &pResult)
 {
-	return getElement( (const char*)buffer, pQuery, queryParams, &pResult);
+	return getElement((const char *)buffer, pQuery, queryParams, &pResult);
 }
 
-const char *Json::getElement( const char *pJson, const char *pQuery, struct ReadElement *pResult )
+const char *Json::getElement(const char *pJson, const char *pQuery, struct ReadElement *pResult)
 {
-	return getElement( pJson, pQuery, NULL, pResult );
+	return getElement(pJson, pQuery, NULL, pResult);
 }
 
-const char *Json::getElement( const char *pJson, const char *pQuery, int *queryParams, struct ReadElement *pResult )
+const char *Json::getElement(const char *pJson, const char *pQuery, int *queryParams, struct ReadElement *pResult)
 {
 	int qTok, jTok, bytelen;
 	unsigned int index, count;
 	struct ReadElement qElement, jElement;
 
-	pJson= findTok( pJson, &jTok );
-	pQuery= findTok( pQuery, &qTok );
+	pJson = findTok(pJson, &jTok);
+	pQuery = findTok(pQuery, &qTok);
 
-	pResult->dataType= jTok;
-	pResult->bytelen= pResult->elements= pResult->error= 0;
-	pResult->pValue= pJson;
+	pResult->dataType = jTok;
+	pResult->bytelen = pResult->elements = pResult->error = 0;
+	pResult->pValue = pJson;
 
-	if( (qTok != JREAD_EOL) && (qTok != jTok) )
+	if ((qTok != JREAD_EOL) && (qTok != jTok))
 	{
-		pResult->error= 1;	// JSON does not match Query
+		pResult->error = 1; // JSON does not match Query
 		return pJson;
 	}
 
-	switch( jTok )
+	switch (jTok)
 	{
 	case JREAD_ERROR:		// general error, eof etc.
-		pResult->error= 2;	// Error reading JSON value
+		pResult->error = 2; // Error reading JSON value
 		break;
 
-	case JREAD_OBJECT:		// "{"
-		if( qTok == JREAD_EOL )
-			return getObjectLength( pJson, pResult, -1 );	// return length of object 
+	case JREAD_OBJECT: // "{"
+		if (qTok == JREAD_EOL)
+			return getObjectLength(pJson, pResult, -1); // return length of object
 
-		pQuery= findTok( ++pQuery, &qTok );			// "('key'...", "{NUMBER", "{*" or EOL
-		if( qTok != JREAD_STRING )
+		pQuery = findTok(++pQuery, &qTok); // "('key'...", "{NUMBER", "{*" or EOL
+		if (qTok != JREAD_STRING)
 		{
-			index= 0;
-			switch( qTok )
+			index = 0;
+			switch (qTok)
 			{
 			case JREAD_NUMBER:
-				pQuery= jRead_atoi( (char *)pQuery, &index );	// index value
+				pQuery = jRead_atoi((char *)pQuery, &index); // index value
 				break;
 			case JREAD_QPARAM:
 				pQuery++;
-				index= (queryParams != NULL) ? *queryParams++ : 0;	// substitute parameter
+				index = (queryParams != NULL) ? *queryParams++ : 0; // substitute parameter
 				break;
 			default:
-				pResult->error= 12;								// Bad Object key
+				pResult->error = 12; // Bad Object key
 				return pJson;
 			}
-			return getObjectLength( pJson, pResult, index );
+			return getObjectLength(pJson, pResult, index);
 		}
 
-		pQuery= getElementString( pQuery, &qElement, QUERY_QUOTE );	// qElement = query 'key'
+		pQuery = getElementString(pQuery, &qElement, QUERY_QUOTE); // qElement = query 'key'
 		//
 		// read <key> : <value> , ... }
 		// loop 'til key matched
 		//
-		while( 1 )
+		while (1)
 		{
-			pJson= getElementString( ++pJson, &jElement, '\"' );
-			if( jElement.dataType != JREAD_STRING )
+			pJson = getElementString(++pJson, &jElement, '\"');
+			if (jElement.dataType != JREAD_STRING)
 			{
-				pResult->error= 3;		// Expected "key"
+				pResult->error = 3; // Expected "key"
 				break;
 			}
-			pJson= findTok( pJson, &jTok );
-			if( jTok != JREAD_COLON )
+			pJson = findTok(pJson, &jTok);
+			if (jTok != JREAD_COLON)
 			{
-				pResult->error= 4;		// Expected ":"
+				pResult->error = 4; // Expected ":"
 				break;
 			}
 			// compare object keys
-			if( equalElement( &qElement, &jElement ) == 0 )
+			if (equalElement(&qElement, &jElement) == 0)
 			{
 				// found object key
-				return getElement( ++pJson, pQuery, queryParams, pResult );
+				return getElement(++pJson, pQuery, queryParams, pResult);
 			}
 			// no key match... skip this value
-			pJson= getElement( ++pJson, "", NULL, pResult );
-			pJson= findTok( pJson, &jTok );
-			if( jTok == JREAD_EOBJECT )
+			pJson = getElement(++pJson, "", NULL, pResult);
+			pJson = findTok(pJson, &jTok);
+			if (jTok == JREAD_EOBJECT)
 			{
-				pResult->error= 5;		// Object key not found
+				pResult->error = 5; // Object key not found
 				break;
 			}
-			if( jTok != JREAD_COMMA )
+			if (jTok != JREAD_COMMA)
 			{
-				pResult->error= 6;		// Expected "," in object
+				pResult->error = 6; // Expected "," in object
 				break;
 			}
 		}
 		break;
-	case JREAD_ARRAY:		// "[NUMBER" or "[*"
+	case JREAD_ARRAY: // "[NUMBER" or "[*"
 		//
 		// read index, skip values 'til index
 		//
-		if( qTok == JREAD_EOL )
-			return getArrayLength( pJson, pResult );	// return length of object 
+		if (qTok == JREAD_EOL)
+			return getArrayLength(pJson, pResult); // return length of object
 
-		index= 0;
-		pQuery= findTok( ++pQuery, &qTok );		// "[NUMBER" or "[*"
-		if( qTok == JREAD_NUMBER )		
+		index = 0;
+		pQuery = findTok(++pQuery, &qTok); // "[NUMBER" or "[*"
+		if (qTok == JREAD_NUMBER)
 		{
-			pQuery= jRead_atoi( pQuery, &index );		// get array index	
-		}else if( qTok == JREAD_QPARAM )
+			pQuery = jRead_atoi(pQuery, &index); // get array index
+		}
+		else if (qTok == JREAD_QPARAM)
 		{
 			pQuery++;
-			index= (queryParams != NULL) ? *queryParams++ : 0;	// substitute parameter
+			index = (queryParams != NULL) ? *queryParams++ : 0; // substitute parameter
 		}
 
-		count=0;
-		while( 1 )
+		count = 0;
+		while (1)
 		{
-			if( count == index )
-				return getElement( ++pJson, pQuery, queryParams, pResult );	// return value at index
+			if (count == index)
+				return getElement(++pJson, pQuery, queryParams, pResult); // return value at index
 			// not this index... skip this value
-			pJson= getElement( ++pJson, "", NULL, &jElement );
-			if( pResult->error )
+			pJson = getElement(++pJson, "", NULL, &jElement);
+			if (pResult->error)
 				break;
-			count++;				
-			pJson= findTok( pJson, &jTok );			// , or ]
-			if( jTok == JREAD_EARRAY )
+			count++;
+			pJson = findTok(pJson, &jTok); // , or ]
+			if (jTok == JREAD_EARRAY)
 			{
-				pResult->error= 10;		// Array element not found (bad index)
+				pResult->error = 10; // Array element not found (bad index)
 				break;
 			}
-			if( jTok != JREAD_COMMA )
+			if (jTok != JREAD_COMMA)
 			{
-				pResult->error= 9;		// Expected "," in array
+				pResult->error = 9; // Expected "," in array
 				break;
 			}
 		}
 		break;
-	case JREAD_STRING:		// "string" 
-		pJson= getElementString( pJson, pResult, '\"' );
+	case JREAD_STRING: // "string"
+		pJson = getElementString(pJson, pResult, '\"');
 		break;
-	case JREAD_NUMBER:		// number (may be -ve) int or float
-	case JREAD_BOOL:		// true or false
-	case JREAD_NULL:		// null
-		bytelen= getElementStringLenght( pJson );
-		pResult->dataType= jTok;
-		pResult->bytelen= bytelen;
-		pResult->pValue= pJson;
-		pResult->elements= 1;
+	case JREAD_NUMBER: // number (may be -ve) int or float
+	case JREAD_BOOL:   // true or false
+	case JREAD_NULL:   // null
+		bytelen = getElementStringLenght(pJson);
+		pResult->dataType = jTok;
+		pResult->bytelen = bytelen;
+		pResult->pValue = pJson;
+		pResult->elements = 1;
 		pJson += bytelen;
 		break;
 	default:
-		pResult->error= 8;	// unexpected character (in pResult->dataType)
+		pResult->error = 8; // unexpected character (in pResult->dataType)
 	}
 	// We get here on a 'terminal value'
 	// - make sure the query string is empty also
-	pQuery= findTok( pQuery, &qTok );
-	if( !pResult->error && (qTok != JREAD_EOL) )
-		pResult->error= 7;	// terminal value found before end of query
-	if( pResult->error )
+	pQuery = findTok(pQuery, &qTok);
+	if (!pResult->error && (qTok != JREAD_EOL))
+		pResult->error = 7; // terminal value found before end of query
+	if (pResult->error)
 	{
-		pResult->dataType= JREAD_ERROR;
-		pResult->elements= pResult->bytelen= 0;
-		pResult->pValue= pJson;		// return pointer into JSON at error point
+		pResult->dataType = JREAD_ERROR;
+		pResult->elements = pResult->bytelen = 0;
+		pResult->pValue = pJson; // return pointer into JSON at error point
 	}
 	return pJson;
 }
 
-
-// Internal for reading 
-const char *Json::skipWhitespace( const char *sp )
+// Internal for reading
+const char *Json::skipWhitespace(const char *sp)
 {
-	while( (*sp != '\0') && (*sp <= ' ') )
+	while ((*sp != '\0') && (*sp <= ' '))
 		sp++;
 	return sp;
 }
-
 
 // Find start of a token
 // - returns pointer to start of next token or element
 //   returns type via tokType
 //
-const char *Json::findTok( const char *sp, int *tokType )
+const char *Json::findTok(const char *sp, int *tokType)
 {
 	char c;
-	sp= skipWhitespace(sp);
-	c= *sp;
-	if( c == '\0' )	*tokType= JREAD_EOL;
-	else if((c == '"') || (c == QUERY_QUOTE))*tokType= JREAD_STRING;
-	else if((c >= '0') && (c <= '9')) *tokType= JREAD_NUMBER;
-	else if( c == '-') *tokType= JREAD_NUMBER;
-	else if( c == '{') *tokType= JREAD_OBJECT;
-	else if( c == '[') *tokType= JREAD_ARRAY;
-	else if( c == '}') *tokType= JREAD_EOBJECT; 
-	else if( c == ']') *tokType= JREAD_EARRAY;
-	else if((c == 't') || (c == 'f')) *tokType= JREAD_BOOL;
-	else if( c == 'n') *tokType= JREAD_NULL;
-	else if( c == ':') *tokType= JREAD_COLON;
-	else if( c == ',') *tokType= JREAD_COMMA;
-	else if( c == '*') *tokType= JREAD_QPARAM;
-	else *tokType= JREAD_ERROR;
+	sp = skipWhitespace(sp);
+	c = *sp;
+	if (c == '\0')
+		*tokType = JREAD_EOL;
+	else if ((c == '"') || (c == QUERY_QUOTE))
+		*tokType = JREAD_STRING;
+	else if ((c >= '0') && (c <= '9'))
+		*tokType = JREAD_NUMBER;
+	else if (c == '-')
+		*tokType = JREAD_NUMBER;
+	else if (c == '{')
+		*tokType = JREAD_OBJECT;
+	else if (c == '[')
+		*tokType = JREAD_ARRAY;
+	else if (c == '}')
+		*tokType = JREAD_EOBJECT;
+	else if (c == ']')
+		*tokType = JREAD_EARRAY;
+	else if ((c == 't') || (c == 'f'))
+		*tokType = JREAD_BOOL;
+	else if (c == 'n')
+		*tokType = JREAD_NULL;
+	else if (c == ':')
+		*tokType = JREAD_COLON;
+	else if (c == ',')
+		*tokType = JREAD_COMMA;
+	else if (c == '*')
+		*tokType = JREAD_QPARAM;
+	else
+		*tokType = JREAD_ERROR;
 	return sp;
 }
 
@@ -715,28 +719,28 @@ const char *Json::findTok( const char *sp, int *tokType )
 // returns: pointer into pJson after the string (char after the " terminator)
 //			pElem contains pointer and length of string (or dataType=JREAD_ERROR)
 //
-const char * Json::getElementString( const char *pJson, struct ReadElement *pElem, char quote )
+const char *Json::getElementString(const char *pJson, struct ReadElement *pElem, char quote)
 {
 	short skipch;
-	pElem->dataType= JREAD_ERROR;
-	pElem->elements= 1;
-	pElem->bytelen= 0;
-	pJson= skipWhitespace( pJson );
-	if( *pJson == quote )
+	pElem->dataType = JREAD_ERROR;
+	pElem->elements = 1;
+	pElem->bytelen = 0;
+	pJson = skipWhitespace(pJson);
+	if (*pJson == quote)
 	{
 		pJson++;
-		pElem->pValue= pJson;				// -> start of actual string
-		pElem->bytelen=0;
-		skipch= 0;
-		while( *pJson != '\0' )
+		pElem->pValue = pJson; // -> start of actual string
+		pElem->bytelen = 0;
+		skipch = 0;
+		while (*pJson != '\0')
 		{
-			if( skipch )
-				skipch= 0;
-			else if( *pJson == '\\' )		//  "\" sequence
-				skipch= 1;
-			else if( *pJson == quote )
+			if (skipch)
+				skipch = 0;
+			else if (*pJson == '\\') //  "\" sequence
+				skipch = 1;
+			else if (*pJson == quote)
 			{
-				pElem->dataType= JREAD_STRING;
+				pElem->dataType = JREAD_STRING;
 				pJson++;
 				break;
 			}
@@ -752,13 +756,13 @@ const char * Json::getElementString( const char *pJson, struct ReadElement *pEle
 // - returns no. of chars from pJson upto a terminator
 // - terminators: ' ' , } ]
 //
-int Json::getElementStringLenght( const char *pJson )
+int Json::getElementStringLenght(const char *pJson)
 {
-	int len= 0;
-	while(	(*pJson >  ' ' ) &&		// any ctrl char incl '\0'
-			(*pJson != ',' ) &&
-			(*pJson != '}' ) &&
-			(*pJson != ']' ) )
+	int len = 0;
+	while ((*pJson > ' ') && // any ctrl char incl '\0'
+		   (*pJson != ',') &&
+		   (*pJson != '}') &&
+		   (*pJson != ']'))
 	{
 		len++;
 		pJson++;
@@ -769,101 +773,87 @@ int Json::getElementStringLenght( const char *pJson )
 // compare two json elements
 // returns: 0 if they are identical strings, else 1
 //
-int Json::equalElement( struct ReadElement *j1, struct ReadElement *j2 )
+int Json::equalElement(struct ReadElement *j1, struct ReadElement *j2)
 {
 	int i;
-	if( (j1->dataType != JREAD_STRING) || 
+	if ((j1->dataType != JREAD_STRING) ||
 		(j2->dataType != JREAD_STRING) ||
-		(j1->bytelen != j2->bytelen ) )
+		(j1->bytelen != j2->bytelen))
 		return 1;
 
-	for( i=0; i< j1->bytelen; i++ )
-		if( ((char *)(j1->pValue))[i] != ((char *)(j2->pValue))[i] )
+	for (i = 0; i < j1->bytelen; i++)
+		if (((char *)(j1->pValue))[i] != ((char *)(j2->pValue))[i])
 			return 1;
-	return 0; 
+	return 0;
 }
 
 //--------------------------------------------------------------------
 // Optional helper functions
-// - simple routines to extract values from JSON
-// - does coercion of types where possible
-// - always returns a value (e.g. 0 or "" on error)
-//
-// Note: by default, pass NULL for queryParams
-//       unless you are using '*' in the query for indexing
-// 
+//--------------------------------------------------------------------
 
-// jRead_long
-// - reads signed long value from JSON 
-// - returns number from NUMBER or STRING elements (if possible)
-//   returns 1 or 0 from BOOL elements
-//   otherwise returns 0
-//
-ReadError Json::getValue( const char *pQuery, long &value )
+ReadError Json::getValue(const char *pQuery, long &value)
 {
-	return getValue( buffer, pQuery, NULL, &value );
+	return getValue(buffer, pQuery, NULL, &value);
 }
 
-ReadError Json::getValue( const char *pQuery, int *queryParams, long &value )
+ReadError Json::getValue(const char *pQuery, int *queryParams, long &value)
 {
-	return getValue( buffer, pQuery, queryParams, &value );
+	return getValue(buffer, pQuery, queryParams, &value);
 }
-ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, long *value )
+ReadError Json::getValue(const char *pJson, const char *pQuery, int *queryParams, long *value)
 {
 	struct ReadElement elem;
-	getElement( pJson, pQuery, queryParams, &elem);
-	if( (elem.dataType == JREAD_ERROR) || (elem.dataType == JREAD_NULL)){
-		return ReadError::JS_ERROR;	
-	}		
-	else if( elem.dataType == JREAD_BOOL )
+	getElement(pJson, pQuery, queryParams, &elem);
+	if ((elem.dataType == JREAD_ERROR) || (elem.dataType == JREAD_NULL))
 	{
-		*value = *((char *)elem.pValue)=='t' ? 1 : 0;
-	}else{
-		jRead_atol( (char *)elem.pValue, value );
+		return ReadError::JS_ERROR;
 	}
-	return ReadError::JS_OK;	
+	else if (elem.dataType == JREAD_BOOL)
+	{
+		*value = *((char *)elem.pValue) == 't' ? 1 : 0;
+	}
+	else
+	{
+		jRead_atol((char *)elem.pValue, value);
+	}
+	return ReadError::JS_OK;
 }
 
-ReadError Json::getValue( const char *pQuery, int &value )
+ReadError Json::getValue(const char *pQuery, int &value)
 {
-	return getValue( buffer, pQuery, NULL, &value);
+	return getValue(buffer, pQuery, NULL, &value);
 }
 
-ReadError Json::getValue( const char *pQuery, int *queryParams, int &value )
+ReadError Json::getValue(const char *pQuery, int *queryParams, int &value)
 {
-	return getValue( buffer, pQuery, queryParams, &value);
+	return getValue(buffer, pQuery, queryParams, &value);
 }
-ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, int *value )
+ReadError Json::getValue(const char *pJson, const char *pQuery, int *queryParams, int *value)
 {
 	long rValue;
 	ReadError error;
-	error = getValue( pJson, pQuery, queryParams,  &rValue);
+	error = getValue(pJson, pQuery, queryParams, &rValue);
 	*value = (int)rValue;
 	return error;
 }
 
-// jRead_double
-// - returns double from JSON
-// - returns number from NUMBER or STRING elements
-//   otherwise returns 0.0
-//
-ReadError Json::getValue(const char *pQuery, double &value )
+ReadError Json::getValue(const char *pQuery, double &value)
 {
-	return getValue( buffer, pQuery, NULL, &value );
+	return getValue(buffer, pQuery, NULL, &value);
 }
 
-ReadError Json::getValue(const char *pQuery, int *queryParams, double &value )
+ReadError Json::getValue(const char *pQuery, int *queryParams, double &value)
 {
-	return getValue( buffer, pQuery, queryParams, &value );
+	return getValue(buffer, pQuery, queryParams, &value);
 }
 
-ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, double *value )
+ReadError Json::getValue(const char *pJson, const char *pQuery, int *queryParams, double *value)
 {
 	struct ReadElement elem;
-	getElement( pJson, pQuery, queryParams, &elem);
-	if( elem.dataType == JREAD_ERROR )
+	getElement(pJson, pQuery, queryParams, &elem);
+	if (elem.dataType == JREAD_ERROR)
 		return ReadError::JS_ERROR;
-	jRead_atof( (char *)elem.pValue, value );
+	jRead_atof((char *)elem.pValue, value);
 	return ReadError::JS_OK;
 }
 
@@ -871,21 +861,21 @@ ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParam
 // - returns bool from JSON
 // - returns error code
 //
-ReadError Json::getValue( const char *pQuery,  bool &value )
+ReadError Json::getValue(const char *pQuery, bool &value)
 {
-	return getValue( buffer, pQuery, NULL, &value );
+	return getValue(buffer, pQuery, NULL, &value);
 }
-ReadError Json::getValue( const char *pQuery, int *queryParams, bool &value )
+ReadError Json::getValue(const char *pQuery, int *queryParams, bool &value)
 {
-	return getValue( buffer, pQuery, queryParams, &value );
+	return getValue(buffer, pQuery, queryParams, &value);
 }
-ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, bool *value )
+ReadError Json::getValue(const char *pJson, const char *pQuery, int *queryParams, bool *value)
 {
 	struct ReadElement elem;
-	getElement( pJson, pQuery, queryParams, &elem);
-	if( elem.dataType == JREAD_BOOL ||  elem.dataType == JREAD_NULL)
+	getElement(pJson, pQuery, queryParams, &elem);
+	if (elem.dataType == JREAD_BOOL || elem.dataType == JREAD_NULL)
 	{
-		*value = (*(char*)elem.pValue == 't') ? true:false;
+		*value = (*(char *)elem.pValue == 't') ? true : false;
 		return ReadError::JS_OK;
 	}
 	else
@@ -894,44 +884,38 @@ ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParam
 	}
 }
 
-// jRead_string
-// Copy string to pDest and '\0'-terminate it (upto destlen total bytes)
-// returns: character length of string (excluding '\0' terminator)
-//
-// Note: any element can be returned as a string
-//
-ReadError Json::getValue( const char *pQuery, char *pDest, int destlen )
+ReadError Json::getValue(const char *pQuery, char *pDest, int destlen)
 {
-	return getValue( buffer, pQuery, NULL, pDest, destlen);
+	return getValue(buffer, pQuery, NULL, pDest, destlen);
 }
-ReadError Json::getValue( const char *pQuery, int *queryParams, char *pDest, int destlen )
+ReadError Json::getValue(const char *pQuery, int *queryParams, char *pDest, int destlen)
 {
-	return getValue( buffer, pQuery, queryParams, pDest, destlen);
+	return getValue(buffer, pQuery, queryParams, pDest, destlen);
 }
-ReadError Json::getValue( const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen )
+ReadError Json::getValue(const char *pJson, const char *pQuery, int *queryParams, char *pDest, int destlen)
 {
 	struct ReadElement elem;
 	int i;
 
-	*pDest= '\0';
-	getElement( pJson, pQuery, queryParams, &elem );
-	if( elem.dataType == JREAD_ERROR )
+	*pDest = '\0';
+	getElement(pJson, pQuery, queryParams, &elem);
+	if (elem.dataType == JREAD_ERROR)
 		return ReadError::JS_ERROR;
 
-	for( i=0; (i<elem.bytelen) && (i<destlen-1); i++ )
+	for (i = 0; (i < elem.bytelen) && (i < destlen - 1); i++)
 		*pDest++ = ((char *)elem.pValue)[i];
-	*pDest= '\0';
+	*pDest = '\0';
 	return ReadError::JS_OK;
 }
 
-const char *Json::jReadTypeToString( int dataType )
+const char *Json::jReadTypeToString(int dataType)
 {
-	return jReadTypeStrings[ dataType ];
+	return jReadTypeStrings[dataType];
 }
 
-const char *Json::jReadErrorToString( int error )
+const char *Json::jReadErrorToString(int error)
 {
-	if( (error >=0 ) && (error <= 14))
-		return jReadErrorStrings[ error ];
+	if ((error >= 0) && (error <= 14))
+		return jReadErrorStrings[error];
 	return "Unknown error";
 }
